@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\EHA_AspNetCore_Angular.props" />
+</Project>
