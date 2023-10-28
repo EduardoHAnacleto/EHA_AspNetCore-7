@@ -1,4 +1,5 @@
 ﻿using EHA_AspNetCore_Angular.Models.Base;
+using NuGet.Packaging;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -27,14 +28,18 @@ public class PaymentCondition : Identification
     public decimal Fine { get; private set; }
 
     [Required]
-    public List<Instalment> InstalmentList { get; private set; } = new List<Instalment>();
+    public ICollection<Instalment> InstalmentList { get; private set; } = new List<Instalment>();
 
-    public PaymentCondition(string name, decimal fee, decimal discount, decimal fine, List<Instalment> instalmentList)
+    public PaymentCondition(string name, decimal fee, decimal discount, decimal fine)
     {
         Name = name;
         Fee = fee;
         Discount = discount;
         Fine = fine;
-        InstalmentList = instalmentList;
+    }
+
+    public void ConfigureInstalmentList(List<Instalment> instalmentList)
+    {
+        InstalmentList.AddRange(instalmentList);
     }
 }

@@ -40,11 +40,24 @@ namespace EHA_AspNetCore_Angular.Data
                 .UseTpcMappingStrategy();
             modelBuilder.Entity<Category>()
                 .UseTpcMappingStrategy();
+            //
 
-            //modelBuilder.Entity<PaymentCondition>()
-            //    .HasMany(e => e.InstalmentList);
-            //modelBuilder.Entity<Instalment>()
-            //     .HasOne(e => e.PaymentMethod);
+            modelBuilder.Entity<PaymentMethod>().ToTable("PaymentMethods");
+            modelBuilder.Entity<Instalment>().ToTable("Instalments");
+            modelBuilder.Entity<PaymentCondition>().ToTable("PaymentConditions");
+
+            modelBuilder.Entity<PaymentMethod>()
+                .UseTpcMappingStrategy();
+            modelBuilder.Entity<PaymentCondition>()
+                .UseTpcMappingStrategy();
+
+            modelBuilder.Entity<Instalment>()
+                .HasKey(e => new { e.PaymentConditionId, e.Number });
+            modelBuilder.Entity<Instalment>()
+                .HasOne(e => e.PaymentMethod);       
+            modelBuilder.Entity<PaymentCondition>()
+                .HasMany(e => e.InstalmentList);
+
 
             //modelBuilder.Entity<Customer>()
             //    .HasOne(e => e.PreferredPayCondition);
