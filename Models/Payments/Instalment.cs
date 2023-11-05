@@ -27,6 +27,7 @@ public class Instalment
     public decimal Percentage { get; private set; }
 
     [Required]
+    [Display(Name = "Payment method")]
     public int PaymentMethodId { get; set; }
     public PaymentMethod PaymentMethod { get; private set; } 
 

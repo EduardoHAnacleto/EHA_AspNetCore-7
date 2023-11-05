@@ -4,6 +4,7 @@ using EHA_AspNetCore_Angular.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EHA_AspNetCore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231104233412_InitialPersonMigration")]
+    partial class InitialPersonMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,38 +51,6 @@ namespace EHA_AspNetCore.Migrations
                     b.HasIndex("PaymentMethodId");
 
                     b.ToTable("Instalments", (string)null);
-                });
-
-            modelBuilder.Entity("EHA_AspNetCore.Models.Sales.ItemSale", b =>
-                {
-                    b.Property<int>("ItemSaleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CancelledDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(5,2");
-
-                    b.Property<decimal>("ProductValue")
-                        .HasColumnType("decimal(10,2");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SaleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ItemSaleId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("SaleId");
-
-                    b.ToTable("ItemsSale", (string)null);
                 });
 
             modelBuilder.Entity("EHA_AspNetCore_Angular.Models.Base.Identification", b =>
@@ -263,33 +234,6 @@ namespace EHA_AspNetCore.Migrations
                     b.ToTable("Suppliers", (string)null);
                 });
 
-            modelBuilder.Entity("EHA_AspNetCore.Models.Sales.Sale", b =>
-                {
-                    b.HasBaseType("EHA_AspNetCore_Angular.Models.Base.Identification");
-
-                    b.Property<DateTime?>("CancellationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CancellationMotive")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PaymentConditionId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(10,2");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("PaymentConditionId");
-
-                    b.ToTable("Sales", (string)null);
-                });
-
             modelBuilder.Entity("EHA_AspNetCore_Angular.Models.Products.Brand", b =>
                 {
                     b.HasBaseType("EHA_AspNetCore_Angular.Models.Base.Identification");
@@ -394,21 +338,6 @@ namespace EHA_AspNetCore.Migrations
                     b.Navigation("PaymentMethod");
                 });
 
-            modelBuilder.Entity("EHA_AspNetCore.Models.Sales.ItemSale", b =>
-                {
-                    b.HasOne("EHA_AspNetCore_Angular.Models.Products.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EHA_AspNetCore.Models.Sales.Sale", null)
-                        .WithMany("SaleItemsList")
-                        .HasForeignKey("SaleId");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("EHA_AspNetCore.Models.People.Customer", b =>
                 {
                     b.HasOne("EHA_AspNetCore.Models.Payments.PaymentCondition", "PaymentCondition")
@@ -427,25 +356,6 @@ namespace EHA_AspNetCore.Migrations
                         .HasForeignKey("PaymentConditionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("PaymentCondition");
-                });
-
-            modelBuilder.Entity("EHA_AspNetCore.Models.Sales.Sale", b =>
-                {
-                    b.HasOne("EHA_AspNetCore.Models.People.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EHA_AspNetCore.Models.Payments.PaymentCondition", "PaymentCondition")
-                        .WithMany()
-                        .HasForeignKey("PaymentConditionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
 
                     b.Navigation("PaymentCondition");
                 });
@@ -472,11 +382,6 @@ namespace EHA_AspNetCore.Migrations
             modelBuilder.Entity("EHA_AspNetCore.Models.Payments.PaymentCondition", b =>
                 {
                     b.Navigation("InstalmentList");
-                });
-
-            modelBuilder.Entity("EHA_AspNetCore.Models.Sales.Sale", b =>
-                {
-                    b.Navigation("SaleItemsList");
                 });
 #pragma warning restore 612, 618
         }

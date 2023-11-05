@@ -1,4 +1,6 @@
 ﻿using EHA_AspNetCore.Models.Payments;
+using EHA_AspNetCore.Models.People;
+using EHA_AspNetCore.Models.Sales;
 using EHA_AspNetCore_Angular.Models.Base;
 using EHA_AspNetCore_Angular.Models.Products;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +17,12 @@ namespace EHA_AspNetCore_Angular.Data
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Instalment> Instalments { get; set; }
         public DbSet<PaymentCondition> PaymentConditions { get; set; }
+
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+
+        public DbSet<ItemSale> ItemsSale { get; set; }
+        public DbSet<Sale> Sales { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -57,6 +65,40 @@ namespace EHA_AspNetCore_Angular.Data
                 .HasOne(e => e.PaymentMethod);       
             modelBuilder.Entity<PaymentCondition>()
                 .HasMany(e => e.InstalmentList);
+
+            //
+
+            modelBuilder.Entity<Supplier>().ToTable("Suppliers");
+            modelBuilder.Entity<Customer>().ToTable("Customers");
+
+            modelBuilder.Entity<Supplier>()
+                .UseTpcMappingStrategy();
+            modelBuilder.Entity<Customer>()
+                .UseTpcMappingStrategy();
+
+            modelBuilder.Entity<Customer>()
+                .HasOne(e => e.PaymentCondition);
+            modelBuilder.Entity<Supplier>()
+                .HasOne(e => e.PaymentCondition);
+
+            //
+
+            modelBuilder.Entity<ItemSale>().ToTable("ItemsSale");
+            modelBuilder.Entity<Sale>().ToTable("Sales");
+
+            modelBuilder.Entity<Sale>()
+                .UseTpcMappingStrategy();
+
+            modelBuilder.Entity<ItemSale>()
+                .HasKey(e => new { e.ItemSaleId, e.ProductId });
+
+            modelBuilder.Entity<ItemSale>()
+                .HasOne(e => e.Product);
+            modelBuilder.Entity<Sale>()
+                .HasMany(e => e.SaleItemsList);
+            modelBuilder.Entity<Sale>()
+                .HasOne(e => e.Customer);
+
 
 
             //modelBuilder.Entity<Customer>()
