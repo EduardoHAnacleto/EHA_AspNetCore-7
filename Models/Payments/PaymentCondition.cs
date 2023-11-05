@@ -1,5 +1,6 @@
 ﻿using EHA_AspNetCore_Angular.Models.Base;
 using NuGet.Packaging;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,16 +16,19 @@ public class PaymentCondition : Identification
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 1000, ErrorMessage = "Fee percentage range is between 0 and 1000")]
+    [DefaultValue(0)]
     public decimal Fee { get; private set; }
 
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 100, ErrorMessage = "Discount percentage range is between 0 and 100")]
+    [DefaultValue(0)]
     public decimal Discount { get; private set; }
 
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 1000, ErrorMessage = "Fine percentage range is between 0 and 1000")]
+    [DefaultValue(0)]
     public decimal Fine { get; private set; }
 
     [Required]

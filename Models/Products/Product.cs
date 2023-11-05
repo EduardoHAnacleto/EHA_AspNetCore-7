@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -21,15 +22,18 @@ public class Product : Identification
     [Display(Name = "Product value")]
     [Column(TypeName = "decimal(10,2")]
     [Range(0, 1000, ErrorMessage = "Value range is between 0 and 1000")]
+    [DefaultValue(0)]
     public decimal Value { get; private set; }
 
     [Required]
     [Display(Name = "Product cost")]
     [Column(TypeName = "decimal(10,2")]
     [Range(0, 1000, ErrorMessage = "Cost range is between 0 and 1000")]
+    [DefaultValue(0)]
     public decimal Cost { get; private set; }
 
     [MinLength(0, ErrorMessage ="Stock has a minimum of 0")]
+    [DefaultValue(0)]
     public int Stock { get; private set; }
 
     [StringLength(30)]

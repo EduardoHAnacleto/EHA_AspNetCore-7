@@ -1,4 +1,5 @@
 ﻿using EHA_AspNetCore_Angular.Models.Base;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace EHA_AspNetCore.Models.Abstractions;
@@ -11,6 +12,7 @@ public abstract class Person : Identification
 
     [Display(Name = "Gender")]
     [Range(0, 3)]
+    [DefaultValue(0)]
     public int Gender { get; private set; }
 
     [Display(Name = "Date of birth")]

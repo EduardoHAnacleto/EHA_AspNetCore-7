@@ -1,19 +1,32 @@
-﻿using EHA_AspNetCore_Angular.Models.Base;
+﻿using EHA_AspNetCore.Models.People;
 using EHA_AspNetCore_Angular.Models.Products;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EHA_AspNetCore.Models.Sales;
+namespace EHA_AspNetCore.Models.Purchases;
 
-[Table("ItemsSale")]
-public class ItemSale
+[Table("PurchasesSale")]
+public class ItemPurchase
 {
     [Key]
-    [Display(Name = "Sale ID")]
-    public int ItemSaleId { get; set; }
+    [Display(Name = "Bill model")]
+    public int PurchaseBillModel { get; private set; }
 
     [Key]
+    [Display(Name = "Bill number")]
+    public int PurchaseBillNumber { get; private set; }
+
+    [Key]
+    [Display(Name = "Bill series")]
+    public int PurchaseBillSeries { get; private set; }
+
+    [Key]
+    [Display(Name = "Supplier")]
+    public int PurchaseSupplierId { get; private set; }
+   // public Supplier Supplier { get; private set; }
+
+
     [Display(Name = "Product")]
     public int ProductId { get; private set; }
     public Product Product { get; private set; }
@@ -35,17 +48,4 @@ public class ItemSale
 
     [Display(Name = "Cancelled Date")]
     public DateTime? CancelledDate { get; private set; }
-
-    public ItemSale(int quantity, decimal discount, decimal productValue, DateTime? cancelledDate)
-    {
-        Quantity = quantity;
-        Discount = discount;
-        ProductValue = productValue;
-        CancelledDate = (DateTime)cancelledDate;
-    }
-
-    public void ConfigureProduct(Product product)
-    {
-        Product = product;
-    }
 }

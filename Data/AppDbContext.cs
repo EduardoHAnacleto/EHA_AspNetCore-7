@@ -1,5 +1,6 @@
 ﻿using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Models.People;
+using EHA_AspNetCore.Models.Purchases;
 using EHA_AspNetCore.Models.Sales;
 using EHA_AspNetCore_Angular.Models.Base;
 using EHA_AspNetCore_Angular.Models.Products;
@@ -23,6 +24,9 @@ namespace EHA_AspNetCore_Angular.Data
 
         public DbSet<ItemSale> ItemsSale { get; set; }
         public DbSet<Sale> Sales { get; set; }
+
+        public DbSet<ItemPurchase> ItemsPurchase { get; set; }
+        public DbSet<Purchase> Purchases { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -99,27 +103,33 @@ namespace EHA_AspNetCore_Angular.Data
             modelBuilder.Entity<Sale>()
                 .HasOne(e => e.Customer);
 
+            //
+
+            modelBuilder.Entity<Purchase>().ToTable("Purchases");
+            modelBuilder.Entity<ItemPurchase>().ToTable("ItemsPurchase");
+
+            modelBuilder.Entity<Purchase>()
+                .HasKey(e => new { e.BillModel, e.BillNumber, e.BillSeries, e.SupplierId });
+            modelBuilder.Entity<ItemPurchase>()
+                .HasKey(e => new { e.PurchaseBillModel, e.PurchaseBillNumber, e.PurchaseBillSeries, e.PurchaseSupplierId, e.ProductId });
+
+            modelBuilder.Entity<ItemPurchase>()
+                .HasOne(e => e.Product);
 
 
-            //modelBuilder.Entity<Customer>()
-            //    .HasOne(e => e.PreferredPayCondition);
-            //modelBuilder.Entity<Supplier>()
-            //    .HasOne(e => e.PreferredPayCondition);
+            modelBuilder.Entity<Purchase>()
+                .HasOne(e => e.Supplier)
+                .WithMany()
+                .HasForeignKey(e => e.SupplierId);
 
-            //modelBuilder.Entity<Sale>()
-            //    .HasMany(e => e.SaleItemsList);
-            //modelBuilder.Entity<Sale>()
-            //    .HasOne(e => e.PaymentCondition);
-            //modelBuilder.Entity<SaleItems>()
-            //    .HasOne(e => e.Product);
+            modelBuilder.Entity<Purchase>()
+                .HasMany(p => p.ItemPurchaseList)
+                .WithOne()
+                .HasForeignKey( ip => new { ip.PurchaseBillModel, ip.PurchaseBillNumber, ip.PurchaseBillSeries, ip.PurchaseSupplierId});
 
-            //modelBuilder.Entity<Purchase>()
-            //    .HasOne(e => e.PaymentCondition);
-            //modelBuilder.Entity<Purchase>()
-            //    .HasOne(e => e.PurchaseItemsList);
-            //modelBuilder.Entity<PurchaseItems>()
-            //    .HasOne(e => e.Product);
+            modelBuilder.Entity<Purchase>()
+                .HasOne(e => e.PaymentCondition);
+
         }
-
     }
 }
