@@ -508,3 +508,4 @@ C:\GitRepository\EHA_AspNetCore\obj\Debug\net7.0\refint\EHA_AspNetCore.dll
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net7.0\EHA_AspNetCore.pdb
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net7.0\EHA_AspNetCore.genruntimeconfig.cache
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net7.0\ref\EHA_AspNetCore.dll
+C:\GitRepository\EHA_AspNetCore\obj\Debug\net7.0\EHA_AspNetCore.sourcelink.json

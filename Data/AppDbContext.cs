@@ -1,4 +1,5 @@
-﻿using EHA_AspNetCore.Models.Payments;
+﻿using EHA_AspNetCore.Models.Bills;
+using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Models.People;
 using EHA_AspNetCore.Models.Purchases;
 using EHA_AspNetCore.Models.Sales;
@@ -28,6 +29,9 @@ namespace EHA_AspNetCore_Angular.Data
         public DbSet<ItemPurchase> ItemsPurchase { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
 
+        public DbSet<BillToReceive> BillsToReceive { get; set; }
+        public DbSet<BillToPay> BillsToPay { get; set; }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
@@ -38,6 +42,18 @@ namespace EHA_AspNetCore_Angular.Data
                 .HasOne(e => e.Brand);
             modelBuilder.Entity<Product>()
                 .HasOne(e => e.Category);
+
+            modelBuilder.Entity<Product>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Brand>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Category>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<Identification>().UseTpcMappingStrategy();
             modelBuilder.Entity<Brand>().ToTable("Brands");
@@ -63,6 +79,14 @@ namespace EHA_AspNetCore_Angular.Data
             modelBuilder.Entity<PaymentCondition>()
                 .UseTpcMappingStrategy();
 
+            modelBuilder.Entity<PaymentMethod>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<PaymentCondition>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<Instalment>()
                 .HasKey(e => new { e.PaymentConditionId, e.Number });
             modelBuilder.Entity<Instalment>()
@@ -80,6 +104,14 @@ namespace EHA_AspNetCore_Angular.Data
             modelBuilder.Entity<Customer>()
                 .UseTpcMappingStrategy();
 
+            modelBuilder.Entity<Supplier>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Customer>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
             modelBuilder.Entity<Customer>()
                 .HasOne(e => e.PaymentCondition);
             modelBuilder.Entity<Supplier>()
@@ -92,6 +124,10 @@ namespace EHA_AspNetCore_Angular.Data
 
             modelBuilder.Entity<Sale>()
                 .UseTpcMappingStrategy();
+
+            modelBuilder.Entity<Sale>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<ItemSale>()
                 .HasKey(e => new { e.ItemSaleId, e.ProductId });
@@ -116,7 +152,6 @@ namespace EHA_AspNetCore_Angular.Data
             modelBuilder.Entity<ItemPurchase>()
                 .HasOne(e => e.Product);
 
-
             modelBuilder.Entity<Purchase>()
                 .HasOne(e => e.Supplier)
                 .WithMany()
@@ -129,6 +164,39 @@ namespace EHA_AspNetCore_Angular.Data
 
             modelBuilder.Entity<Purchase>()
                 .HasOne(e => e.PaymentCondition);
+
+            //
+
+            modelBuilder.Entity<BillToPay>().ToTable("BillsToPay");
+            modelBuilder.Entity<BillToReceive>().ToTable("BillsToReceive");
+
+            modelBuilder.Entity<BillToReceive>()
+                .UseTpcMappingStrategy();
+
+            modelBuilder.Entity<BillToReceive>()
+                .HasOne(e => e.PaymentMethod);
+            modelBuilder.Entity<BillToReceive>()
+                .HasOne(e => e.Sale);
+            modelBuilder.Entity<BillToReceive>()
+                .HasOne(e => e.Customer);
+
+            modelBuilder.Entity<BillToPay>()
+                .HasOne(e => e.Purchase);
+            modelBuilder.Entity<BillToPay>()
+                .HasOne(e => e.Supplier);
+            modelBuilder.Entity<BillToPay>()
+                .HasOne(e => e.PaymentMethod);
+
+            modelBuilder.Entity<BillToReceive>()
+                .HasKey(e => new { e.InstalmentNumber, e.Id });
+            modelBuilder.Entity<BillToPay>()
+                .HasKey(e => new { e.BillModel, e.BillNumber, e.BillSeries, e.SupplierId, e.InstalmentNumber });
+
+            modelBuilder.Entity<BillToReceive>()
+                .Property(e => e.Id)
+                .ValueGeneratedOnAdd();
+
+
 
         }
     }
