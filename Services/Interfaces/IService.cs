@@ -1,6 +1,6 @@
 ﻿using System.Composition.Convention;
 
-namespace EHA_AspNetCore.Interfaces;
+namespace EHA_AspNetCore.Services.Interfaces;
 
 public interface IService<T> where T : class
 {

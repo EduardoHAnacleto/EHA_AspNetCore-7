@@ -2,7 +2,7 @@
 using EHA_AspNetCore_Angular.Models.Products;
 using Microsoft.EntityFrameworkCore;
 
-namespace EHA_AspNetCore.Interfaces;
+namespace EHA_AspNetCore.Services.Interfaces;
 
 public interface IBrandService : IService<Brand>
 {

@@ -1,4 +1,4 @@
-﻿using EHA_AspNetCore.Interfaces;
+﻿using EHA_AspNetCore.Services.Interfaces;
 using EHA_AspNetCore_Angular.Data;
 using EHA_AspNetCore_Angular.Models.Products;
 
