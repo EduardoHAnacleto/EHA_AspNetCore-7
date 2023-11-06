@@ -44,6 +44,18 @@ namespace EHA_AspNetCore_Angular.Data
                 .HasOne(e => e.Category);
 
             modelBuilder.Entity<Product>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Brand>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Category>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Product>()
                 .Property(e => e.Id)
                 .ValueGeneratedOnAdd();
 
@@ -84,6 +96,17 @@ namespace EHA_AspNetCore_Angular.Data
                 .ValueGeneratedOnAdd();
 
             modelBuilder.Entity<PaymentCondition>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<PaymentCondition>()
+                .HasMany(e => e.InstalmentList);            
+                
+            modelBuilder.Entity<PaymentMethod>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<PaymentCondition>()
                 .Property(e => e.Id)
                 .ValueGeneratedOnAdd();
 
@@ -107,6 +130,14 @@ namespace EHA_AspNetCore_Angular.Data
             modelBuilder.Entity<Supplier>()
                 .Property(e => e.Id)
                 .ValueGeneratedOnAdd();
+
+            modelBuilder.Entity<Customer>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<Supplier>()
+                .HasIndex(e => e.Name)
+                .IsUnique();
 
             modelBuilder.Entity<Customer>()
                 .Property(e => e.Id)

@@ -15,17 +15,22 @@ public class Category : Identification
 {
     [Required]
     [StringLength(30, MinimumLength = 3, ErrorMessage = "Brand name must be between 3 and 30 characters.")]
-    public string Name { get; private set; }
+    public string Name { get; set; }
 
     [MaxLength(50, ErrorMessage = "Description must have maximum of 50 characters.")]
-    public string Description { get; private set; }
+    public string Description { get; set; }
 
     [Display(Name = "Display order")]
-    public int DisplayOrder { get; private set; }
+    public int DisplayOrder { get; set; }
 
     [ValidateNever]
     [StringLength(100)]
     public string UrlImage { get; private set; }
+
+    public Category()
+    {
+        
+    }
 
     public Category(string name, string description, int displayOrder, string urlImage)
     {

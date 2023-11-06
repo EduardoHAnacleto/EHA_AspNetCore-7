@@ -312,6 +312,10 @@ namespace EHA_AspNetCore.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
                     b.ToTable("PaymentConditions", (string)null);
                 });
 
@@ -323,6 +327,10 @@ namespace EHA_AspNetCore.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("PaymentMethods", (string)null);
                 });
@@ -385,6 +393,10 @@ namespace EHA_AspNetCore.Migrations
                     b.Property<string>("ZipCode")
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.HasIndex("PaymentConditionId");
 
@@ -454,6 +466,10 @@ namespace EHA_AspNetCore.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
                     b.HasIndex("PaymentConditionId");
 
                     b.ToTable("Suppliers", (string)null);
@@ -499,6 +515,10 @@ namespace EHA_AspNetCore.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
+
                     b.ToTable("Brands", (string)null);
                 });
 
@@ -521,6 +541,10 @@ namespace EHA_AspNetCore.Migrations
                     b.Property<string>("UrlImage")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Categories", (string)null);
                 });
@@ -569,6 +593,10 @@ namespace EHA_AspNetCore.Migrations
                     b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Products", (string)null);
                 });

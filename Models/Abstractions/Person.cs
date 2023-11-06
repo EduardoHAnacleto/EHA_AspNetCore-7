@@ -21,6 +21,7 @@ public abstract class Person : Identification
     [Required(ErrorMessage = "E-mail must be informed.")]
     [Display(Name = "E-mail")]
     [MaxLength(40, ErrorMessage = "E-mail must have maximum of 40 characters.")]
+
     public string Email { get; private set; }
 
     [Display(Name = "Street name")]

@@ -11,28 +11,33 @@ public class PaymentCondition : Identification
 {
     [Required]
     [StringLength(50, MinimumLength = 5, ErrorMessage = "Name must be between 5 and 50 characters.")]
-    public string Name { get; private set; }
+    public string Name { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 1000, ErrorMessage = "Fee percentage range is between 0 and 1000")]
     [DefaultValue(0)]
-    public decimal Fee { get; private set; }
+    public decimal Fee { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 100, ErrorMessage = "Discount percentage range is between 0 and 100")]
     [DefaultValue(0)]
-    public decimal Discount { get; private set; }
+    public decimal Discount { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 1000, ErrorMessage = "Fine percentage range is between 0 and 1000")]
     [DefaultValue(0)]
-    public decimal Fine { get; private set; }
+    public decimal Fine { get; set; }
 
     [Required]
-    public ICollection<Instalment> InstalmentList { get; private set; } = new List<Instalment>();
+    public ICollection<Instalment> InstalmentList { get; set; } = new List<Instalment>();
+
+    public PaymentCondition()
+    {
+        
+    }
 
     public PaymentCondition(string name, decimal fee, decimal discount, decimal fine)
     {
