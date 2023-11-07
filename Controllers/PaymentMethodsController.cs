@@ -7,89 +7,108 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore_Angular.Data;
+using System.Runtime.CompilerServices;
 
 namespace EHA_AspNetCore.Controllers
 {
-    public class PaymentConditionsController : Controller
+    public class PaymentMethodsController : Controller
     {
         private readonly AppDbContext _context;
 
-        public PaymentConditionsController(AppDbContext context)
+        public PaymentMethodsController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: PaymentConditions
+        // GET: PaymentMethods
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-              return View(await _context.PaymentConditions.ToListAsync());
+              return View(await _context.PaymentMethods.ToListAsync());
         }
 
-        // GET: PaymentConditions/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet]
+        public async Task<JsonResult> GetAll()
         {
-            if (id == null || _context.PaymentConditions == null)
-            {
-                return NotFound();
-            }
-
-            var paymentCondition = await _context.PaymentConditions
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (paymentCondition == null)
-            {
-                return NotFound();
-            }
-
-            return View(paymentCondition);
+            return Json(await _context.PaymentMethods.ToListAsync());
         }
 
-        // GET: PaymentConditions/Create
-        public IActionResult Create()
-        {
-            ViewData["PaymentMethods"] = new SelectList(_context.PaymentMethods, "Id", "Name");
-            return View();
-        }
-
-        // POST: PaymentConditions/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Fee,Discount,Fine,Id")] PaymentCondition paymentCondition)
+        public async Task<IActionResult> PostNew(PaymentMethod obj)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(paymentCondition);
+                await _context.PaymentMethods.AddAsync(obj);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(paymentCondition);
+            return Json(ModelState);
         }
 
-        // GET: PaymentConditions/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: PaymentMethods/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.PaymentConditions == null)
+            if (id == null || _context.PaymentMethods == null)
             {
                 return NotFound();
             }
 
-            var paymentCondition = await _context.PaymentConditions.FindAsync(id);
-            if (paymentCondition == null)
+            var paymentMethod = await _context.PaymentMethods
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (paymentMethod == null)
             {
                 return NotFound();
             }
-            return View(paymentCondition);
+
+            return View(paymentMethod);
         }
 
-        // POST: PaymentConditions/Edit/5
+        // GET: PaymentMethods/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: PaymentMethods/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Fee,Discount,Fine,Id")] PaymentCondition paymentCondition)
+        public async Task<IActionResult> Create([Bind("Name,Id")] PaymentMethod paymentMethod)
         {
-            if (id != paymentCondition.Id)
+            if (ModelState.IsValid)
+            {
+                _context.Add(paymentMethod);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(paymentMethod);
+        }
+
+        // GET: PaymentMethods/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.PaymentMethods == null)
+            {
+                return NotFound();
+            }
+
+            var paymentMethod = await _context.PaymentMethods.FindAsync(id);
+            if (paymentMethod == null)
+            {
+                return NotFound();
+            }
+            return View(paymentMethod);
+        }
+
+        // POST: PaymentMethods/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Id")] PaymentMethod paymentMethod)
+        {
+            if (id != paymentMethod.Id)
             {
                 return NotFound();
             }
@@ -98,12 +117,12 @@ namespace EHA_AspNetCore.Controllers
             {
                 try
                 {
-                    _context.Update(paymentCondition);
+                    _context.Update(paymentMethod);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PaymentConditionExists(paymentCondition.Id))
+                    if (!PaymentMethodExists(paymentMethod.Id))
                     {
                         return NotFound();
                     }
@@ -114,49 +133,49 @@ namespace EHA_AspNetCore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(paymentCondition);
+            return View(paymentMethod);
         }
 
-        // GET: PaymentConditions/Delete/5
+        // GET: PaymentMethods/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.PaymentConditions == null)
+            if (id == null || _context.PaymentMethods == null)
             {
                 return NotFound();
             }
 
-            var paymentCondition = await _context.PaymentConditions
+            var paymentMethod = await _context.PaymentMethods
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (paymentCondition == null)
+            if (paymentMethod == null)
             {
                 return NotFound();
             }
 
-            return View(paymentCondition);
+            return View(paymentMethod);
         }
 
-        // POST: PaymentConditions/Delete/5
+        // POST: PaymentMethods/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.PaymentConditions == null)
+            if (_context.PaymentMethods == null)
             {
-                return Problem("Entity set 'AppDbContext.PaymentConditions'  is null.");
+                return Problem("Entity set 'AppDbContext.PaymentMethods'  is null.");
             }
-            var paymentCondition = await _context.PaymentConditions.FindAsync(id);
-            if (paymentCondition != null)
+            var paymentMethod = await _context.PaymentMethods.FindAsync(id);
+            if (paymentMethod != null)
             {
-                _context.PaymentConditions.Remove(paymentCondition);
+                _context.PaymentMethods.Remove(paymentMethod);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PaymentConditionExists(int id)
+        private bool PaymentMethodExists(int id)
         {
-          return _context.PaymentConditions.Any(e => e.Id == id);
+          return _context.PaymentMethods.Any(e => e.Id == id);
         }
     }
 }

@@ -36,6 +36,7 @@
         </form>
     </div>
 </div>
+<hr />
 <div class="row">
     <div class ="form-group">
         <label for="InstalmentNumber">Instalment Number</label>
@@ -47,9 +48,8 @@
         <label for="ValuePercentage">ValuePercentage</label>
         <input type="number" id="ValuePercentage" />
 
-        <select name="Method" onchange="combo(this, 'demo')">
-            <option>Boleto</option>
-            <option>Cartao</option>
+        <label for="PaymentMethodCbox">Payment Method</label>
+        <select id="PaymentMethodCbox" asp-items="@((SelectList)ViewData["PaymentMethods"])">
         </select>
         <button type="button" id="FindPaymentMethod">Search</button>
         <button type="button" id="AddInstalment">Add</button>
@@ -76,6 +76,122 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+<div id="modal" class="modal fade" rode="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title"></h6>
+            </div>
+
+            <div class="modal-body">
+                <table id="modTable">
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modalCreate" class="modal fade" rode="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Create" asp-controller="PaymentMethods" method="post" onsubmit="event.preventDefault();">
+                <div class="modal-header">
+                    <h6 class="modal-title">New Payment Method</h6>
+                </div>
+
+                <div class="modal-body">                  
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <input type="submit" onclick="clickSave();" id="btnSaveMethod" value="Save" class="btn btn-sm btn-outline-success" />
+                        <input type="button" value="Exit" class="btn btn-sm btn-light" data-bs-dismiss="modal" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function () {
+            $("#FindPaymentMethod").click(function () {
+                PaymentMethodsModal();
+            });
+        });        
+        
+        function PaymentMethodsModal() {
+            $.ajax({
+                url:"/PaymentMethods/GetAll",
+                method: "GET",
+                success: function (methods) {
+                    SetModal(methods);
+                }
+            });
+        }
+
+        function SetModal(methods) {
+            console.log(methods);
+            var index = 0;
+            var modTable = document.getElementById("modTable");
+            var table = '<table class="table table-sm table-hover table-striped table" >';
+            table += '<thead>';
+            table += '<tr>';
+            table += '<th>Name</th>';
+            table += '<th>Actions</th>';
+            table += '</tr>';
+            table += '</thead>';
+            table += '<tbody>';
+
+            for (index = 0; index < methods.length; index++) {
+                table += '<tr id="method_'+methods[index].id+'">';
+                table += '<td id="${methods[index].name}"> '+methods[index].name+' </td>';
+                table += '<td button class="btn btn-sm btn-outline-info" onclick="TakeMethodName('+methods[index].id+')">Select</td>';
+                table += '<td button class="btn btn-sm btn-outline-info" onclick="FormCreateMethod()">New</td>';
+                table += '</tr>'
+            }  
+
+            table += '</tbody>';
+            table += '</table>';
+
+            modTable.innerHTML = table;
+            $('#modal').modal('show');
+        }
+
+        function TakeMethodName(id) {
+            $('#modal').modal('hide');           
+            $("#PaymentMethodCbox").val(id);
+        }
+
+        function FormCreateMethod() {
+            $('#modalCreate').modal('show');
+        }
+
+        function clickSave() {
+            console.log("aaaa");
+            $.ajax({
+                url: "/PaymentMethods/PostNew",
+                method: "POST",
+                data: $("#modalCreate form").serialize(),
+                success: function (data) {
+                    $("#modalCreate").modal("hide");
+                    $("#modalCreate form")[0].reset();
+                },
+                error: function (data) {
+                    //Mensagem de erro
+                }
+            });
+        }
+
+    </script>
 }
