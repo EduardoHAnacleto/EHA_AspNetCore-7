@@ -14,22 +14,22 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" id="payName" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Fee" class="control-label"></label>
-                <input asp-for="Fee" class="form-control" />
+                <input asp-for="Fee" class="form-control" id="payFee" value="0" />
                 <span asp-validation-for="Fee" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Discount" class="control-label"></label>
-                <input asp-for="Discount" class="form-control" />
+                <input asp-for="Discount" class="form-control" id="payDiscount" value="0" />
                 <span asp-validation-for="Discount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Fine" class="control-label"></label>
-                <input asp-for="Fine" class="form-control" />
+                <input asp-for="Fine" class="form-control" id="payFine" value="0" />
                 <span asp-validation-for="Fine" class="text-danger"></span>
             </div>
 
@@ -40,32 +40,42 @@
 <div class="row">
     <div class ="form-group">
         <label for="InstalmentNumber">Instalment Number</label>
-        <input type="number" id="InstalmentNumber"/>
+        <input type="number" id="InstalmentNumber" value="1"/>
 
         <label for="Days">Days</label>
-        <input type="number" id="Days" />
+        <input type="number" id="Days" value="0" />
+        <span id="errorDays" style="color:red;"></span>
 
         <label for="ValuePercentage">ValuePercentage</label>
-        <input type="number" id="ValuePercentage" />
+        <input type="number" id="ValuePercentage" value="0.00"/>
+        <span id="errorPercentage" style="color: red;"></span>
 
         <label for="PaymentMethodCbox">Payment Method</label>
         <select id="PaymentMethodCbox" asp-items="@((SelectList)ViewData["PaymentMethods"])">
         </select>
+
+        <label for="TotalPercentage">Total Percentage</label>
+        <input type="number" id="TotalPercentage" value="0" />
+        <span id="errorTotalPerc" style="color:red;"></span>
+
         <button type="button" id="FindPaymentMethod">Search</button>
-        <button type="button" id="AddInstalment">Add</button>
+        <button type="button" id="AddInstalment" onclick="AddInstalment()">Add</button>
     </div>
 </div>
-<table class="table">
+<table class="table" id="InstalmentTable">
     <thead>
         <tr>
             <th>Instalment number</th>
             <th>Days</th>
-            <th>Value percentage</th>
-            <th>Payment method</th>
+            <th>Value Percentage</th>
+            <th>Payment Method</th>
+            <th>Actions</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="InstalmentTableBody">
+        <tr>
 
+        </tr>
     </tbody>
 </table>
 
@@ -111,7 +121,7 @@
 
                 <div class="modal-footer">
                     <div class="form-group">
-                        <input type="submit" onclick="clickSave();" id="btnSaveMethod" value="Save" class="btn btn-sm btn-outline-success" />
+                        <input type="submit" onclick="ClickSave();" id="btnSaveMethod" value="Save" class="btn btn-sm btn-outline-success" />
                         <input type="button" value="Exit" class="btn btn-sm btn-light" data-bs-dismiss="modal" />
                     </div>
                 </div>
@@ -119,7 +129,9 @@
         </div>
     </div>
 </div>
-
+<div> 
+    <input type="submit" onclick="SaveObject();" id="btnSaveObject" value="Save" class="btn btn-sm btn-outline-success" />
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -128,8 +140,25 @@
             $("#FindPaymentMethod").click(function () {
                 PaymentMethodsModal();
             });
-        });        
-        
+        });
+
+        var arrayInstalments = [];
+        let paymentCondition = {
+            Name: "",
+            Fee: "",
+            Discount: "",
+            Fine: "",
+            InstalmentList: [] 
+        };
+
+        function setPaymentCondition() {
+            paymentCondition.Name = document.getElementById("payName").value;
+            paymentCondition.Fee = document.getElementById("payFee").value;
+            paymentCondition.Discount = document.getElementById("payDiscount").value;
+            paymentCondition.Fine = document.getElementById("payFine").value;
+            paymentCondition.InstalmentList = arrayInstalments;
+        }
+
         function PaymentMethodsModal() {
             $.ajax({
                 url:"/PaymentMethods/GetAll",
@@ -138,6 +167,50 @@
                     SetModal(methods);
                 }
             });
+        }
+
+        function ClickSave() {
+            $.ajax({
+                url: "/PaymentMethods/PostNew",
+                method: "POST",
+                data: $("#modalCreate form").serialize(),
+                success: function (data) {
+                    $("#modalCreate").modal("hide");
+                    $("#modalCreate form")[0].reset();
+                },
+                error: function (data) {
+                    //Mensagem de erro
+                }
+            });
+        }
+
+         function SaveObject() {  
+             if (ValidateObject()) {
+                setPaymentCondition();
+                $.ajax({
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "PassThings/",
+                    data: JSON.stringify(paymentCondition),
+                    success: function () {
+                        console.log("success");
+                    },
+                    error: function () {
+                        console.log("error");
+                    }
+                });
+             }
+        }
+
+        function ValidateObject() {
+            var totalPerc = $('#TotalPercentage').val();
+            if (ValidateTotalPercentage(totalPerc)) {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
 
         function SetModal(methods) {
@@ -149,6 +222,7 @@
             table += '<tr>';
             table += '<th>Name</th>';
             table += '<th>Actions</th>';
+            table += '<td button class="btn btn-sm btn-outline-info" onclick="FormCreateMethod()">New</td>';
             table += '</tr>';
             table += '</thead>';
             table += '<tbody>';
@@ -157,7 +231,7 @@
                 table += '<tr id="method_'+methods[index].id+'">';
                 table += '<td id="${methods[index].name}"> '+methods[index].name+' </td>';
                 table += '<td button class="btn btn-sm btn-outline-info" onclick="TakeMethodName('+methods[index].id+')">Select</td>';
-                table += '<td button class="btn btn-sm btn-outline-info" onclick="FormCreateMethod()">New</td>';
+
                 table += '</tr>'
             }  
 
@@ -177,20 +251,125 @@
             $('#modalCreate').modal('show');
         }
 
-        function clickSave() {
-            console.log("aaaa");
-            $.ajax({
-                url: "/PaymentMethods/PostNew",
-                method: "POST",
-                data: $("#modalCreate form").serialize(),
-                success: function (data) {
-                    $("#modalCreate").modal("hide");
-                    $("#modalCreate form")[0].reset();
-                },
-                error: function (data) {
-                    //Mensagem de erro
+        function AddInstalment() {
+            var Number = $('#InstalmentNumber').val();
+            var Days = $('#Days').val();
+            var Percentage = $('#ValuePercentage').val();
+            var PaymentMethodId = $('#PaymentMethodCbox option:selected').text();
+            var totalPercentage = $('#TotalPercentage').val();
+            var itable = $('#InstalmentTable tr:last');
+            if (ValidateInstalmentCamps(Number, Days, Percentage, totalPercentage)) {
+                arrayInstalments.push({ Number, Days, Percentage, PaymentMethodId });
+                AddInstalmentToTable(Number, Days, Percentage, PaymentMethodId);
+                SetTotalPercentage(Percentage, totalPercentage);
+                SetInstalmentNumber(Number);
+            }
+        }
+
+        function AddInstalmentToTable(inumber, days, percentage, method, placement) {
+            var index = inumber - 1;
+            var itable = $('#InstalmentTable tr:last');
+            setTimeout(() => {
+                itable.after(`
+                                        <tr id= "row${index}">
+                                            <td>${inumber}</td>
+                                            <td>${days}</td>
+                                            <td>${percentage}%</td>
+                                            <td>${method}</td>
+                                            <td button class="btn btn-sm btn-outline-info" onclick="RemoveInstalment(${index})">Remove</td>
+                                        </tr>`)
+            }, 0)
+        }
+
+        function SetInstalmentNumber(inumber) {
+            var iNow = $('#InstalmentNumber').val();
+            $('#InstalmentNumber').val(++iNow);
+        }
+
+        function SetTotalPercentage(percentage, totalPercentage) {
+            var percN = parseFloat(percentage);
+            var percT = parseFloat(totalPercentage);
+            $('#TotalPercentage').val(percN+percT);
+        }
+
+        function RemakeTableInstalments() {
+            var arrayCount = arrayInstalments.length;
+            $('#InstalmentNumber').val(arrayCount+1);
+            setTimeout(() => {
+                for (var i = arrayCount-1 ; i >= 0; i--) {
+                    arrayInstalments[i].inumber = i+1;
+                    var inumber = arrayInstalments[i].inumber;
+                    var days = arrayInstalments[i].days;
+                    var percentage = arrayInstalments[i].percentage;
+                    var method = arrayInstalments[i].method;
+
+                    AddInstalmentToTable(inumber, days, percentage, method);
                 }
-            });
+            },0)           
+        }
+
+        function RemoveInstalment(index) {
+            console.log(index);
+            var percN = arrayInstalments[index].percentage
+            console.log(percN);
+            var totalVal = $('#TotalPercentage').val();
+            $('#TotalPercentage').val(totalVal-percN);
+
+            arrayInstalments.splice(index, 1);
+            console.log(arrayInstalments);
+            var tbody = document.getElementById('InstalmentTableBody');
+            tbody.innerHTML = '';
+            RemakeTableInstalments();
+        }
+
+        function ValidateInstalmentCamps(inumber, days, percentage, totalPercentage) {
+            if (ValidatePercentage(percentage, totalPercentage)
+            && ValidateDays(days)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        function ValidateTotalPercentage(totalPercentage) {
+            if (totalPercentage != 100) {
+                document.getElementById("errorTotalPerc").textContent = "Total percentage must have a total of 100%."
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+        function ValidateDays(days) {
+            if (days > 365) {
+                document.getElementById("errorDays").textContent = "Days must not be longer than 365."
+                return false;
+            }
+            else if (days == "" || days < 0) {
+                document.getElementById("errorDays").textContent = "Days must not be lower than 0."
+            }
+            else return true;
+        }
+
+        function ValidatePercentage(percentage, totalPercentage) {
+            var percN = parseFloat(percentage);
+            var percT = parseFloat(totalPercentage);
+            if (percT >= 100) {
+                return false;
+            }
+            if ((percN + percT) > 100) {
+                var resultPerc = 100 - percT;
+                document.getElementById("ValuePercentage").value = resultPerc;
+                document.getElementById("errorPercentage").textContent = "Total percentage must not pass 100%, the value has been set to the maximum allowed."
+                return false;
+            }
+            else if (percN <= 0) {
+                document.getElementById("errorPercentage").textContent = "Total percentage must not be lower than 1%."
+                return false;
+            }
+            return true;
         }
 
     </script>

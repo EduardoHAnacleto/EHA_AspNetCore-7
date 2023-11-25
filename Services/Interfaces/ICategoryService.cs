@@ -1,5 +1,8 @@
-﻿namespace EHA_AspNetCore.Services.Interfaces;
+﻿using EHA_AspNetCore_Angular.Models.Products;
 
-public interface ICategoryService
+namespace EHA_AspNetCore.Services.Interfaces;
+
+public interface ICategoryService : IService<Category>
 {
+
 }

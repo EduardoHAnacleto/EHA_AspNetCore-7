@@ -1,4 +1,7 @@
+using EHA_AspNetCore.Controllers;
 using EHA_AspNetCore.Repository;
+using EHA_AspNetCore.Services;
+using EHA_AspNetCore.Services.Interfaces;
 using EHA_AspNetCore_Angular.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +13,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+builder.Services.AddScoped<IInstalmentRepository, InstalmentRepository>();
+builder.Services.AddScoped<IInstalmentService, InstalmentService>();
 
 var app = builder.Build();
 

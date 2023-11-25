@@ -1,4 +1,5 @@
 ﻿using EHA_AspNetCore_Angular.Models.Base;
+using Newtonsoft.Json;
 using NuGet.Packaging;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -11,27 +12,32 @@ public class PaymentCondition : Identification
 {
     [Required]
     [StringLength(50, MinimumLength = 5, ErrorMessage = "Name must be between 5 and 50 characters.")]
+    [JsonProperty("Name")]
     public string Name { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 1000, ErrorMessage = "Fee percentage range is between 0 and 1000")]
     [DefaultValue(0)]
+    [JsonProperty("Fee")]
     public decimal Fee { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 100, ErrorMessage = "Discount percentage range is between 0 and 100")]
     [DefaultValue(0)]
+    [JsonProperty("Discount")]
     public decimal Discount { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(5,2")]
     [Range(0, 1000, ErrorMessage = "Fine percentage range is between 0 and 1000")]
     [DefaultValue(0)]
+    [JsonProperty("Fine")]
     public decimal Fine { get; set; }
 
     [Required]
+    [JsonProperty("InstalmentList")]
     public ICollection<Instalment> InstalmentList { get; set; } = new List<Instalment>();
 
     public PaymentCondition()

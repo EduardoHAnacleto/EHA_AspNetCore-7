@@ -1,5 +1,7 @@
-﻿namespace EHA_AspNetCore.Services.Interfaces;
+﻿using EHA_AspNetCore_Angular.Models.Products;
 
-public interface IProductService
+namespace EHA_AspNetCore.Services.Interfaces;
+
+public interface IProductService : IService<Product>
 {
 }

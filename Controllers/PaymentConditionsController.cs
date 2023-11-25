@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore_Angular.Data;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+using Azure;
+using System.Text.Json.Nodes;
+using Microsoft.AspNetCore.Http.HttpResults;
+using EHA_AspNetCore.DTOs;
 
 namespace EHA_AspNetCore.Controllers
 {
@@ -22,7 +28,7 @@ namespace EHA_AspNetCore.Controllers
         // GET: PaymentConditions
         public async Task<IActionResult> Index()
         {
-              return View(await _context.PaymentConditions.ToListAsync());
+            return View(await _context.PaymentConditions.ToListAsync());
         }
 
         // GET: PaymentConditions/Details/5
@@ -60,10 +66,42 @@ namespace EHA_AspNetCore.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(paymentCondition);
+                //await _instalmentController.Create(GetInstalments());
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(paymentCondition);
+        }
+
+        [HttpPost]    
+        public async Task<IActionResult> PassThings([FromBody] PaymentConditionDTO data)
+        {
+            try
+            {
+                if (ModelState.IsValid) // arrumar
+                {
+                    var aux = data;
+                    //Fazer mapeamento do DTO para model, considerando objeto complexo
+                    //Pesquisar se devo colocar a função de mapear nos Services, na model de DTO ou em outro lugar
+
+                    return Ok(data);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
+
+        private IFormCollection GetInstalments()
+        {
+            throw new NotImplementedException();
         }
 
         // GET: PaymentConditions/Edit/5
