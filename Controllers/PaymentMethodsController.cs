@@ -8,16 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore_Angular.Data;
 using System.Runtime.CompilerServices;
+using Microsoft.Data.SqlClient;
+using EHA_AspNetCore.Services.Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace EHA_AspNetCore.Controllers
 {
     public class PaymentMethodsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IPaymentMethodService _service;
 
-        public PaymentMethodsController(AppDbContext context)
+        public PaymentMethodsController(AppDbContext context, IPaymentMethodService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: PaymentMethods
@@ -169,7 +174,15 @@ namespace EHA_AspNetCore.Controllers
                 _context.PaymentMethods.Remove(paymentMethod);
             }
             
-            await _context.SaveChangesAsync();
+            if (_service.CheckIfForeignKey(id))
+            {
+                return Conflict();
+            }
+            else
+            {
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -4,5 +4,7 @@ namespace EHA_AspNetCore.Services.Interfaces;
 
 public interface IPaymentConditionService : IService<PaymentCondition>
 {
+    PaymentCondition PopulateFullObject(PaymentCondition paymentCondition);
+
 
 }

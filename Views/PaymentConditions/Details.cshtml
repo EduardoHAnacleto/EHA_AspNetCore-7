@@ -35,6 +35,27 @@
             @Html.DisplayFor(model => model.Fine)
         </dd>
     </dl>
+    <table class="table" id="InstalmentTable">
+        <thead>
+            <tr>
+                <th>Instalment number</th>
+                <th>Days</th>
+                <th>Value Percentage</th>
+                <th>Payment Method</th>
+            </tr>
+        </thead>
+        <tbody id="InstalmentTableBody">
+            @foreach (var instalment in Model.InstalmentList)
+            {
+                <tr>
+                    <td>@instalment.Number</td>
+                    <td>@instalment.Days</td>
+                    <td>@instalment.Percentage</td>
+                    <td>@instalment.PaymentMethod.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

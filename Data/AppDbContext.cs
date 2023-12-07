@@ -1,4 +1,5 @@
 ﻿using EHA_AspNetCore.Models.Bills;
+using EHA_AspNetCore.Models.Enums;
 using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Models.People;
 using EHA_AspNetCore.Models.Purchases;
@@ -21,6 +22,7 @@ namespace EHA_AspNetCore_Angular.Data
         public DbSet<PaymentCondition> PaymentConditions { get; set; }
 
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerTypeEnum> CustomerTypes { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
 
         public DbSet<ItemSale> ItemsSale { get; set; }
@@ -31,6 +33,8 @@ namespace EHA_AspNetCore_Angular.Data
 
         public DbSet<BillToReceive> BillsToReceive { get; set; }
         public DbSet<BillToPay> BillsToPay { get; set; }
+
+        
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -121,6 +125,10 @@ namespace EHA_AspNetCore_Angular.Data
 
             modelBuilder.Entity<Supplier>().ToTable("Suppliers");
             modelBuilder.Entity<Customer>().ToTable("Customers");
+            modelBuilder.Entity<CustomerTypeEnum>().ToTable("CustomerTypes");
+
+            modelBuilder.Entity<CustomerTypeEnum>()
+                .HasNoKey();
 
             modelBuilder.Entity<Supplier>()
                 .UseTpcMappingStrategy();

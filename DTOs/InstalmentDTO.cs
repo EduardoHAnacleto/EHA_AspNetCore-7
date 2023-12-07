@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using EHA_AspNetCore.Models.Payments;
+using Newtonsoft.Json;
 
 namespace EHA_AspNetCore.DTOs;
 
@@ -11,8 +12,11 @@ public class InstalmentDTO
     public int Days { get; set; }
 
     [JsonProperty("Percentage")]
-    public string Percentage { get; set; }
+    public decimal Percentage { get; set; }
 
     [JsonProperty("PaymentMethodId")]
-    public string PaymentMethodId { get; set; }
+    public int PaymentMethodId { get; set; }
+
+    [JsonProperty("PaymentMethod")]
+    public string PaymentMethod { get; set; }
 }

@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="CreateWithInstalment" method="post" enctype="application/x-www-form-urlencoded" id="formAndList" data-list-name="instalmentList">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -33,25 +33,35 @@
                 <span asp-validation-for="Fine" class="text-danger"></span>
             </div>
 
+            <input type="hidden" name="instalmentList" id="instalmentList" value="" />
+
+            <div class="form-group">
+                <input type="submit" value="Create" onsubmit="UpdateHiddenArray();" class="btn btn-primary" />
+            </div>
         </form>
     </div>
 </div>
 <hr />
+
 <div class="row">
-    <div class ="form-group">
+    <div class="form-group">
         <label for="InstalmentNumber">Instalment Number</label>
-        <input type="number" id="InstalmentNumber" value="1"/>
+        <input type="number" id="InstalmentNumber" value="1" />
 
         <label for="Days">Days</label>
         <input type="number" id="Days" value="0" />
         <span id="errorDays" style="color:red;"></span>
 
         <label for="ValuePercentage">ValuePercentage</label>
-        <input type="number" id="ValuePercentage" value="0.00"/>
+        <input type="number" id="ValuePercentage" value="0.00" />
         <span id="errorPercentage" style="color: red;"></span>
 
         <label for="PaymentMethodCbox">Payment Method</label>
-        <select id="PaymentMethodCbox" asp-items="@((SelectList)ViewData["PaymentMethods"])">
+        <select id="PaymentMethodCbox">
+            @foreach (var item in (SelectList)ViewData["PaymentMethods"])
+            {
+                <option value="@item.Value" data-id="@item.Value">@item.Text</option>
+            }
         </select>
 
         <label for="TotalPercentage">Total Percentage</label>
@@ -74,14 +84,13 @@
     </thead>
     <tbody id="InstalmentTableBody">
         <tr>
-
         </tr>
     </tbody>
 </table>
 
-<div class="form-group">
-    <input type="submit" value="Create" class="btn btn-primary" />
-</div>
+    <div class="form-group">
+        <input type="submit" onsubmit="SendInstalmentArray();" value="Create" class="btn btn-primary" />
+    </div>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
@@ -129,9 +138,7 @@
         </div>
     </div>
 </div>
-<div> 
-    <input type="submit" onclick="SaveObject();" id="btnSaveObject" value="Save" class="btn btn-sm btn-outline-success" />
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -140,8 +147,12 @@
             $("#FindPaymentMethod").click(function () {
                 PaymentMethodsModal();
             });
+            $("#formAndList").submit(function () {
+                UpdateHiddenArray();
+            });
         });
 
+        var instalmentsJson = "";
         var arrayInstalments = [];
         let paymentCondition = {
             Name: "",
@@ -150,6 +161,12 @@
             Fine: "",
             InstalmentList: [] 
         };
+
+        function UpdateHiddenArray() {
+            instalmentsJson = JSON.stringify(arrayInstalments);
+            $("#instalmentList").val(instalmentsJson);
+            document.querySelector("#instalmentList").value = instalmentsJson;
+        }
 
         function setPaymentCondition() {
             paymentCondition.Name = document.getElementById("payName").value;
@@ -184,7 +201,7 @@
             });
         }
 
-         function SaveObject() {  
+        function SaveObject() {  
              if (ValidateObject()) {
                 setPaymentCondition();
                 $.ajax({
@@ -202,6 +219,27 @@
                 });
              }
         }
+
+        function SendInstalmentArray() {
+            console.log("sending array...");
+            if (ValidateObject()) {
+                setPaymentCondition();
+                $.ajax({
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    type: 'POST',
+                    url: "/PaymentConditions/CreateWithInstalment",
+                    data: JSON.stringify(arrayInstalments),
+                    success: function () {
+                        console.log("array sent");
+                    },
+                    error: function () {
+                        console.log("error on sending array");
+                    }
+                });
+            }
+        }
+
 
         function ValidateObject() {
             var totalPerc = $('#TotalPercentage').val();
@@ -255,20 +293,22 @@
             var Number = $('#InstalmentNumber').val();
             var Days = $('#Days').val();
             var Percentage = $('#ValuePercentage').val();
-            var PaymentMethodId = $('#PaymentMethodCbox option:selected').text();
+            var PaymentMethod = $('#PaymentMethodCbox option:selected').text();
+            var PaymentMethodId = $('#PaymentMethodCbox option:selected').data("id");
             var totalPercentage = $('#TotalPercentage').val();
             var itable = $('#InstalmentTable tr:last');
             if (ValidateInstalmentCamps(Number, Days, Percentage, totalPercentage)) {
-                arrayInstalments.push({ Number, Days, Percentage, PaymentMethodId });
-                AddInstalmentToTable(Number, Days, Percentage, PaymentMethodId);
+                arrayInstalments.push({ Number, Days, Percentage, PaymentMethodId, PaymentMethod });
+                AddInstalmentToTable(Number, Days, Percentage, PaymentMethod);
                 SetTotalPercentage(Percentage, totalPercentage);
                 SetInstalmentNumber(Number);
+                UpdateHiddenArray();
             }
         }
 
         function AddInstalmentToTable(inumber, days, percentage, method, placement) {
             var index = inumber - 1;
-            var itable = $('#InstalmentTable tr:last');
+            var itable = $('#InstalmentTableBody tr:last');
             setTimeout(() => {
                 itable.after(`
                                         <tr id= "row${index}">
@@ -297,11 +337,11 @@
             $('#InstalmentNumber').val(arrayCount+1);
             setTimeout(() => {
                 for (var i = arrayCount-1 ; i >= 0; i--) {
-                    arrayInstalments[i].inumber = i+1;
-                    var inumber = arrayInstalments[i].inumber;
-                    var days = arrayInstalments[i].days;
-                    var percentage = arrayInstalments[i].percentage;
-                    var method = arrayInstalments[i].method;
+                    arrayInstalments[i].Number = i+1;
+                    var inumber = arrayInstalments[i].Number;
+                    var days = arrayInstalments[i].Days;
+                    var percentage = arrayInstalments[i].Percentage;
+                    var method = arrayInstalments[i].PaymentMethod;
 
                     AddInstalmentToTable(inumber, days, percentage, method);
                 }
@@ -309,16 +349,14 @@
         }
 
         function RemoveInstalment(index) {
-            console.log(index);
-            var percN = arrayInstalments[index].percentage
-            console.log(percN);
+            var percN = arrayInstalments[index].Percentage
             var totalVal = $('#TotalPercentage').val();
             $('#TotalPercentage').val(totalVal-percN);
 
             arrayInstalments.splice(index, 1);
             console.log(arrayInstalments);
             var tbody = document.getElementById('InstalmentTableBody');
-            tbody.innerHTML = '';
+            tbody.innerHTML = '<tr></tr>';
             RemakeTableInstalments();
         }
 

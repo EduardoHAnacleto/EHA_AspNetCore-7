@@ -13,16 +13,25 @@ using Azure;
 using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Http.HttpResults;
 using EHA_AspNetCore.DTOs;
+using Microsoft.AspNetCore.Components;
+using System.IdentityModel.Tokens.Jwt;
+using EHA_AspNetCore.Services;
+using EHA_AspNetCore.Services.Interfaces;
+using NuGet.Packaging;
 
 namespace EHA_AspNetCore.Controllers
 {
     public class PaymentConditionsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IInstalmentService _instalmentService;
+        private readonly IPaymentConditionService _paymentConditionService;
 
-        public PaymentConditionsController(AppDbContext context)
+        public PaymentConditionsController(AppDbContext context, IInstalmentService instalmentService, IPaymentConditionService paymentConditionService)
         {
             _context = context;
+            _instalmentService = instalmentService;
+            _paymentConditionService = paymentConditionService;
         }
 
         // GET: PaymentConditions
@@ -44,6 +53,10 @@ namespace EHA_AspNetCore.Controllers
             if (paymentCondition == null)
             {
                 return NotFound();
+            }
+            else
+            {
+                paymentCondition = _paymentConditionService.PopulateFullObject(paymentCondition);
             }
 
             return View(paymentCondition);
@@ -73,35 +86,28 @@ namespace EHA_AspNetCore.Controllers
             return View(paymentCondition);
         }
 
-        [HttpPost]    
-        public async Task<IActionResult> PassThings([FromBody] PaymentConditionDTO data)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateWithInstalment([Bind("Name,Fee,Discount,Fine,Id")] PaymentCondition paymentCondition)
         {
-            try
+            var jsonInstalmentList = Request.Form["instalmentList"];
+            var instalmentDtoList = JsonConvert.DeserializeObject<List<InstalmentDTO>>(jsonInstalmentList);
+
+            if (ModelState.IsValid && instalmentDtoList != null)
             {
-                if (ModelState.IsValid) // arrumar
-                {
-                    var aux = data;
-                    //Fazer mapeamento do DTO para model, considerando objeto complexo
-                    //Pesquisar se devo colocar a função de mapear nos Services, na model de DTO ou em outro lugar
+                _context.Add(paymentCondition);
+                await _context.SaveChangesAsync();
 
-                    return Ok(data);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                var instalmentList = _instalmentService.MapDtoToClass(instalmentDtoList);
+                instalmentList = _instalmentService.SetId(paymentCondition.Id, instalmentList);
+                instalmentList = _instalmentService.SetPaymentMethod(instalmentList);
 
+                _context.Instalments.AddRange(instalmentList);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-
-        }
-
-        private IFormCollection GetInstalments()
-        {
-            throw new NotImplementedException();
+            return View(nameof(Index));
         }
 
         // GET: PaymentConditions/Edit/5
@@ -117,11 +123,16 @@ namespace EHA_AspNetCore.Controllers
             {
                 return NotFound();
             }
+            else
+            {
+                paymentCondition = _paymentConditionService.PopulateFullObject(paymentCondition);
+            }
+            ViewData["PaymentMethods"] = new SelectList(_context.PaymentMethods, "Id", "Name");
             return View(paymentCondition);
         }
 
         // POST: PaymentConditions/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // To protect from overposting attacks, enable the specific properties you want to bind to. EditWithInstalment
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -155,6 +166,49 @@ namespace EHA_AspNetCore.Controllers
             return View(paymentCondition);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditWithInstalment(int id, [Bind("Name,Fee,Discount,Fine,Id")] PaymentCondition paymentCondition)
+        {
+            if (id != paymentCondition.Id)
+            {
+                return NotFound();
+            }
+
+            var jsonInstalmentList = Request.Form["instalmentList"];
+            var instalmentDtoList = JsonConvert.DeserializeObject<List<InstalmentDTO>>(jsonInstalmentList);
+
+            if (ModelState.IsValid && instalmentDtoList != null)
+            {
+                try
+                {
+
+                    _context.Update(paymentCondition);
+                    var instalmentList = _instalmentService.MapDtoToClass(instalmentDtoList);
+                    instalmentList = _instalmentService.SetId(paymentCondition.Id, instalmentList);
+                    instalmentList = _instalmentService.SetPaymentMethod(instalmentList);
+                    var listToRemove = _instalmentService.RemoveExistingInstalments(paymentCondition.Id);
+                    _context.Instalments.RemoveRange(listToRemove);
+                    _context.Instalments.AddRange(instalmentList);
+
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PaymentConditionExists(paymentCondition.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         // GET: PaymentConditions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -168,6 +222,10 @@ namespace EHA_AspNetCore.Controllers
             if (paymentCondition == null)
             {
                 return NotFound();
+            }
+            else
+            {
+                paymentCondition = _paymentConditionService.PopulateFullObject(paymentCondition);
             }
 
             return View(paymentCondition);

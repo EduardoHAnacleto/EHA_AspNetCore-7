@@ -12,7 +12,7 @@ namespace EHA_AspNetCore_Angular.Models.Base
     public abstract class Identification
     {
         [Key]
-        public int Id { get; }
+        public int Id { get; set; }
 
         [Required]
         [Display(Name = "Date of Creation")]

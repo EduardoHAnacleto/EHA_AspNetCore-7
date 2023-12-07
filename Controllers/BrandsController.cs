@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore_Angular.Data;
 using EHA_AspNetCore_Angular.Models.Products;
+using EHA_AspNetCore.Services.Interfaces;
 
 namespace EHA_AspNetCore.Controllers
 {
     public class BrandsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IBrandService _service;
 
-        public BrandsController(AppDbContext context)
+        public BrandsController(AppDbContext context, IBrandService brandService)
         {
             _context = context;
+            _service = brandService;
         }
 
         // GET: Brands
@@ -148,8 +151,15 @@ namespace EHA_AspNetCore.Controllers
             {
                 _context.Brands.Remove(brand);
             }
-            
-            await _context.SaveChangesAsync();
+
+            if (_service.CheckIfForeignKey(id))
+            {
+                return Conflict();
+            }
+            else
+            {
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 

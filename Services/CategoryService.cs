@@ -1,42 +1,27 @@
 ﻿using EHA_AspNetCore.Repository;
+using EHA_AspNetCore.Services.Interfaces;
+using EHA_AspNetCore_Angular.Data;
 using EHA_AspNetCore_Angular.Models.Products;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace EHA_AspNetCore.Services;
 
-public class CategoryService : ICategoryRepository
+public class CategoryService : ICategoryService
 {
-    public void Add(Category entity)
+    private readonly AppDbContext _context;
+
+    public CategoryService(AppDbContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
     }
 
-    public void Delete(Category entity)
+    public bool CheckIfForeignKey(int id)
     {
-        throw new NotImplementedException();
+        return _context.Products.Any(i => i.CategoryId == id || i.Category.Id == id);
     }
 
-    public void DeleteRange(IEnumerable<Category> entities)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Category Get(Expression<Func<Category, bool>> filter)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IEnumerable<Category> GetAll()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Save()
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Update(Category obj)
+    public Category ProcessObject(Category obj)
     {
         throw new NotImplementedException();
     }

@@ -6,4 +6,5 @@ public interface IService<T> where T : class
 {
     public T ProcessObject(T obj);
 
+    bool CheckIfForeignKey(int id);
 }

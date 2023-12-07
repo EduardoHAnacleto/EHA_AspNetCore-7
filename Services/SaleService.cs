@@ -5,6 +5,11 @@ namespace EHA_AspNetCore.Services;
 
 public class SaleService : ISaleService
 {
+    public bool CheckIfForeignKey(int id)
+    {
+        throw new NotImplementedException();
+    }
+
     public Sale ProcessObject(Sale obj)
     {
         ProcessProductStock(obj);

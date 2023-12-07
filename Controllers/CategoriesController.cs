@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore_Angular.Data;
 using EHA_AspNetCore_Angular.Models.Products;
 using EHA_AspNetCore.Repository;
+using EHA_AspNetCore.Services.Interfaces;
 
 namespace EHA_AspNetCore.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ICategoryRepository _categoryRepo;
+        private readonly ICategoryService _service;
 
-        public CategoriesController(ICategoryRepository context)
+        public CategoriesController(ICategoryRepository context, ICategoryService service)
         {
             _categoryRepo = context;
+            _service = service;
         }
 
         // GET: Categories
@@ -148,8 +151,15 @@ namespace EHA_AspNetCore.Controllers
             {
                 _categoryRepo.Delete(categoryFromDb);
             }
-            
-            _categoryRepo.Save();
+
+            if (_service.CheckIfForeignKey(id))
+            {
+                return Conflict();
+            }
+            else
+            {
+                _categoryRepo.Save();
+            }
             return RedirectToAction(nameof(Index));
         }
 

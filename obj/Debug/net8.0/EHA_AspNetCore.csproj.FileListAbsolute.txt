@@ -223,12 +223,8 @@ C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win-arm\native\Microso
 C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
-C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
-C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
-C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
-C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
-C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net8.0\EHA_AspNetCore.csproj.AssemblyReference.cache
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net8.0\EHA_AspNetCore.GeneratedMSBuildEditorConfig.editorconfig
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net8.0\EHA_AspNetCore.AssemblyInfoInputs.cache
@@ -254,3 +250,7 @@ C:\GitRepository\EHA_AspNetCore\obj\Debug\net8.0\refint\EHA_AspNetCore.dll
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net8.0\EHA_AspNetCore.pdb
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net8.0\EHA_AspNetCore.genruntimeconfig.cache
 C:\GitRepository\EHA_AspNetCore\obj\Debug\net8.0\ref\EHA_AspNetCore.dll
+C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\Microsoft.AspNetCore.Components.QuickGrid.dll
+C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter.dll
+C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win\lib\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\GitRepository\EHA_AspNetCore\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Windows.Extensions.dll
