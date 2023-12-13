@@ -22,7 +22,6 @@ namespace EHA_AspNetCore_Angular.Data
         public DbSet<PaymentCondition> PaymentConditions { get; set; }
 
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<CustomerTypeEnum> CustomerTypes { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
 
         public DbSet<ItemSale> ItemsSale { get; set; }
@@ -125,10 +124,13 @@ namespace EHA_AspNetCore_Angular.Data
 
             modelBuilder.Entity<Supplier>().ToTable("Suppliers");
             modelBuilder.Entity<Customer>().ToTable("Customers");
-            modelBuilder.Entity<CustomerTypeEnum>().ToTable("CustomerTypes");
 
-            modelBuilder.Entity<CustomerTypeEnum>()
-                .HasNoKey();
+            modelBuilder.Entity<Customer>()
+                .Property(e => e.CustomerType)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (CustomerTypeEnum)Enum.Parse(typeof(CustomerTypeEnum), v));
+                
 
             modelBuilder.Entity<Supplier>()
                 .UseTpcMappingStrategy();

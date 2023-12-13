@@ -1,4 +1,5 @@
 ﻿using EHA_AspNetCore.Models.Abstractions;
+using EHA_AspNetCore.Models.Enums;
 using EHA_AspNetCore.Models.Payments;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -24,7 +25,7 @@ public class Supplier : Person
         
     }
 
-    public Supplier(string name, int gender, DateTime? dateOfBirth, string email, string street, string district, string buildingNumber,
+    public Supplier(string name, GenderEnum gender, DateTime? dateOfBirth, string email, string street, string district, string buildingNumber,
         string addressAddition, string zipCode, string city, string country, string phoneNumber,
         int stateInscription, string socialReason)
         : base(name, gender, (DateTime) dateOfBirth, email, street, district, buildingNumber, addressAddition, zipCode, city, country, phoneNumber)

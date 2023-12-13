@@ -4,14 +4,9 @@ using System.Runtime.Serialization;
 
 namespace EHA_AspNetCore.Models.Enums;
 
-[Table("CustomerTypes")]
-public abstract class CustomerTypeEnum
+public enum CustomerTypeEnum
 {
-    enum CustomerType
-    {
-        Natural = 0,
-        Legal = 1
-    }
+    Natural = 0,
+    Legal = 1
     
-
 }

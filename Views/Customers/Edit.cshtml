@@ -1,0 +1,153 @@
+﻿@using EHA_AspNetCore.Models.Enums
+@model EHA_AspNetCore.Models.People.Customer
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Customer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CustomerType" class="control-label"></label>
+                <select asp-for="CustomerType" asp-items="Html.GetEnumSelectList<CustomerTypeEnum>()" class="form-control"></select>
+                <span asp-validation-for="CustomerType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentConditionId" class="control-label"></label>
+                <select asp-for="PaymentConditionId" class="form-control" asp-items="ViewBag.PaymentConditionId"></select>
+                <span asp-validation-for="PaymentConditionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label>
+                <select asp-for="Gender" asp-items="Html.GetEnumSelectList<GenderEnum>()" class="form-control"></select>
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <input asp-for="DateOfBirth" class="form-control" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Street" class="control-label"></label>
+                <input asp-for="Street" id="streetInput" class="form-control" />
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="District" class="control-label"></label>
+                <input asp-for="District" id="districtInput" class="form-control" />
+                <span asp-validation-for="District" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuildingNumber" class="control-label"></label>
+                <input asp-for="BuildingNumber" id="buildingNumberInput" class="form-control" />
+                <span asp-validation-for="BuildingNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AddressAddition" class="control-label"></label>
+                <input asp-for="AddressAddition" id="additionInput" class="form-control" />
+                <span asp-validation-for="AddressAddition" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ZipCode" class="control-label"></label>
+                <input asp-for="ZipCode" id="zipCodeInput" oninput="GetZipCodeInfo()" class="form-control" />
+                <span asp-validation-for="ZipCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" id="cityInput" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Country" class="control-label"></label>
+                <input asp-for="Country" id="countryInput" class="form-control" />
+                <span asp-validation-for="Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+        function GetZipCodeJson() {
+            var zipcode = $('#zipCodeInput').val();
+            var countryName = "BRAZIL";
+            var dataToSend = {
+                zipCode: zipcode,
+                country: countryName
+            };
+            var jsonZip = JSON.stringify(dataToSend);
+            return jsonZip;
+        }
+
+        function GetZipCodeInfo() {
+            if ($('#zipCodeInput').val().length > 7) {
+                var jsonSend = GetZipCodeJson();
+                $.ajax({
+                    contentType: 'application/json',
+                    url: '/Customers/GetGeoLocationApi',
+                    method: 'GET',
+                    dataType: 'json',
+                    data: { jsonZip: jsonSend },
+                    success: function (data) {
+                        SetZipCodeInfo(data);
+                    },
+                    error: function () {
+                        console.log("error");
+                    }
+                });
+            };
+        }
+
+        function SetZipCodeInfo(data) {
+            var response = JSON.parse(data);
+            AddInfoToCamps(response);
+        }
+
+        function AddInfoToCamps(jsonData) {
+            if ($('#streetInput').val().length < 1 && jsonData.hasOwnProperty('address')) {
+                $('#streetInput').val(jsonData.address);
+            }
+            if ($('#districtInput').val().length < 1 && jsonData.hasOwnProperty('district')) {
+                $('#districtInput').val(jsonData.district);
+            }
+            if ($('#cityInput').val().length < 1 && jsonData.hasOwnProperty('city')) {
+                $('#cityInput').val(jsonData.city);
+            }
+            if ($('#countryInput').val().length < 1 && jsonData.hasOwnProperty('country')) {
+                $('#countryInput').val(jsonData.country);
+            }
+        }
+
+    </script>
+}

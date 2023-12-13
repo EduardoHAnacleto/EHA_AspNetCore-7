@@ -1,6 +1,8 @@
-﻿using EHA_AspNetCore_Angular.Models.Base;
+﻿using EHA_AspNetCore.Models.Enums;
+using EHA_AspNetCore_Angular.Models.Base;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EHA_AspNetCore.Models.Abstractions;
 
@@ -10,10 +12,10 @@ public abstract class Person : Identification
     [StringLength(30, MinimumLength = 8, ErrorMessage = "Name must be between 8 and 30 characters.")]
     public string Name { get; set; }
 
+    [Required]
     [Display(Name = "Gender")]
-    [Range(0, 3)]
-    [DefaultValue(0)]
-    public int Gender { get; set; }
+    [Column(TypeName = "nvarchar(20)")]
+    public GenderEnum Gender { get; set; }
 
     [Display(Name = "Date of birth")]
     public DateTime? DateOfBirth { get; set; }
@@ -62,7 +64,7 @@ public abstract class Person : Identification
         
     }
 
-    public Person(string name, int gender, DateTime dateOfBirth, string email, string street, string district,
+    public Person(string name, GenderEnum gender, DateTime dateOfBirth, string email, string street, string district,
         string buildingNumber, string addressAddition, string zipCode, string city, string country, string phoneNumber)
     {
         Name = name;

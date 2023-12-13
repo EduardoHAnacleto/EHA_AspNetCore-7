@@ -182,7 +182,6 @@ namespace EHA_AspNetCore.Controllers
             {
                 try
                 {
-
                     _context.Update(paymentCondition);
                     var instalmentList = _instalmentService.MapDtoToClass(instalmentDtoList);
                     instalmentList = _instalmentService.SetId(paymentCondition.Id, instalmentList);
@@ -253,6 +252,17 @@ namespace EHA_AspNetCore.Controllers
         private bool PaymentConditionExists(int id)
         {
           return _context.PaymentConditions.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetInstalments(int id)
+        {
+            var pc = _context.PaymentConditions
+                .Include(x => x.InstalmentList)
+                .ThenInclude(y => y.PaymentMethod)
+                .First(x => x.Id == 41);
+
+            return Json(pc.InstalmentList);
         }
     }
 }

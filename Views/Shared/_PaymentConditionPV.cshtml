@@ -1,0 +1,63 @@
+﻿@model EHA_AspNetCore.Models.Payments.PaymentCondition
+<div class="container">
+    <div class="row">
+        <div class="form-group">
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" id="payName" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fee" class="control-label"></label>
+                <input asp-for="Fee" class="form-control" id="payFee" value="0" />
+                <span asp-validation-for="Fee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Discount" class="control-label"></label>
+                <input asp-for="Discount" class="form-control" id="payDiscount" value="0" />
+                <span asp-validation-for="Discount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fine" class="control-label"></label>
+                <input asp-for="Fine" class="form-control" id="payFine" value="0" />
+                <span asp-validation-for="Fine" class="text-danger"></span>
+            </div>
+
+            <table class="table" id="InstalmentTable">
+                <thead>
+                    <tr>
+                        <th>Instalment number</th>
+                        <th>Days</th>
+                        <th>Value Percentage</th>
+                        <th>Payment Method</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody id="InstalmentTableBody">
+                        @foreach (var instalment in Model.InstalmentList)
+                        {
+                        <tr>
+                            <td>@instalment.Number</td>
+                            <td>@instalment.Days</td>
+                            <td>@instalment.Percentage</td>
+                            <td>@instalment.PaymentMethod.Name</td>
+                            <td>0</td>
+                        </tr>
+                        }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            console.log(Model);
+        });
+
+        function UpdateValueOnTable() {
+
+        }
+    </script>
+}

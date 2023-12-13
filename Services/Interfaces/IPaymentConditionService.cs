@@ -6,5 +6,5 @@ public interface IPaymentConditionService : IService<PaymentCondition>
 {
     PaymentCondition PopulateFullObject(PaymentCondition paymentCondition);
 
-
+    Task<PaymentCondition> GetFirstOrDefaultPaymentCondition(CancellationToken cancellationToken = default);
 }

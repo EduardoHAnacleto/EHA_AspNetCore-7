@@ -1,10 +1,18 @@
 ﻿using EHA_AspNetCore.Models.Sales;
 using EHA_AspNetCore.Services.Interfaces;
+using EHA_AspNetCore_Angular.Data;
 
 namespace EHA_AspNetCore.Services;
 
 public class SaleService : ISaleService
 {
+    private readonly AppDbContext _context;
+
+    public SaleService(AppDbContext context)
+    {
+        _context = context;
+    }
+
     public bool CheckIfForeignKey(int id)
     {
         throw new NotImplementedException();

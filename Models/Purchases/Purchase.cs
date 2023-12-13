@@ -12,62 +12,67 @@ public class Purchase
 
     [Key]
     [Display(Name = "Bill model")]
-    public int BillModel { get; private set; }
+    public int BillModel { get; set; }
 
     [Key]
     [Display(Name = "Bill number")]
-    public int BillNumber { get; private set; }
+    public int BillNumber { get; set; }
 
     [Key]
     [Display(Name = "Bill series")]
-    public int BillSeries { get; private set; }
+    public int BillSeries { get; set; }
 
     [Key]
     [Display(Name = "Supplier")]
-    public int SupplierId { get; private set; }
-    public Supplier Supplier { get; private set; }
+    public int SupplierId { get; set; }
+    public Supplier Supplier { get; set; }
 
     [Display(Name = "Cancellation date")]
-    public DateTime? CancellationDate { get; private set; }
+    public DateTime? CancellationDate { get; set; }
 
     [Display(Name = "Motive of cancellation")]
     [MinLength(5, ErrorMessage = "Motive of cancellation must be at least 5 characters long.")]
     [MaxLength(100, ErrorMessage = "Motive of cancellation must have maximum of 100 characters.")]
-    public string? CancellationMotive { get; private set; }
+    public string? CancellationMotive { get; set; }
 
     [Required]
     [Display(Name = "Emission date")]
-    public DateTime EmissionDate { get; private set; }
+    public DateTime EmissionDate { get; set; }
 
     [Required]
     [Display(Name = "Payment condition")]
-    public int PaymentConditionId { get; private set; }
-    public PaymentCondition PaymentCondition { get; private set; }
+    public int PaymentConditionId { get; set; }
+    public PaymentCondition PaymentCondition { get; set; }
 
     [Required]
     [Column(TypeName = "decimal(10,2")]
-    public decimal Value { get; private set; }
+    public decimal Value { get; set; }
 
     [Required]
     [DefaultValue(0)]
     [Display(Name = "Freight cost")]
     [Column(TypeName = "decimal(10,2")]
-    public decimal FreightValue { get; private set; }
+    public decimal FreightValue { get; set; }
 
     [Required]
     [DefaultValue(0)]
     [Display(Name = "Extra expenses")]
     [Column(TypeName = "decimal(10,2")]
-    public decimal ExtraExpenses { get; private set; }
+    public decimal ExtraExpenses { get; set; }
 
     [Required]
     [DefaultValue(0)]
     [Display(Name = "Insurance value")]
     [Column(TypeName = "decimal(10,2")]
-    public decimal InsuranceValue { get; private set; }
+    public decimal InsuranceValue { get; set; }
 
     [Required]
     public ICollection<ItemPurchase> ItemPurchaseList { get; set; } = new List<ItemPurchase>();
+
+    public Purchase()
+    {
+        
+    }
 
     public Purchase(int billModel, int billNumber, int billSeries, int supplierId, DateTime? cancellationDate,
     string cancellationMotive, DateTime emissionDate, int paymentConditionId,

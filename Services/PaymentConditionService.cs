@@ -1,6 +1,7 @@
 ﻿using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Services.Interfaces;
 using EHA_AspNetCore_Angular.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EHA_AspNetCore.Services;
@@ -32,6 +33,17 @@ public class PaymentConditionService : IPaymentConditionService
     public PaymentCondition ProcessObject(PaymentCondition obj)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<PaymentCondition> GetFirstOrDefaultPaymentCondition(CancellationToken cancellationToken = default)
+    {
+        var pcTask = _context.PaymentConditions
+            .Include(x => x.InstalmentList)
+            .ThenInclude(y => y.PaymentMethod)
+            .FirstOrDefaultAsync(cancellationToken);
+        var pc = await pcTask;
+
+        return pc;
     }
 
 }

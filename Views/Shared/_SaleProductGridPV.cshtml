@@ -1,0 +1,38 @@
+﻿@using EHA_AspNetCore.Models.Sales
+@model ItemSale
+
+<div class="row">
+    <div class="col-md-12">
+        <table id="tableItemsSale" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Discount</th>
+                    <th>Value</th>
+                    <th>Total Value</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyItemsSale">
+                <tr>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var dgvItemsSale = $("#tableItemsSale");
+        var row = dgvItemsSale.find("tbody").append("<tr></tr>");
+
+        row.append("<td>ProdutoNome</td>");
+        row.append("<td>100</td>");
+        row.append("<td>0</td>");
+        row.append("<td>2</td>");
+        row.append("<td>2</td>");
+    })
+</script>
+
+

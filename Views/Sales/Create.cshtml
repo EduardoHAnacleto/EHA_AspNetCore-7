@@ -1,0 +1,84 @@
+﻿@using EHA_AspNetCore.Models.Sales
+@model EHA_AspNetCore.Models.Sales.Sale
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Sale</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CustomerId" class="control-label"></label>
+                <select asp-for="CustomerId" class ="form-control" asp-items="ViewBag.CustomerId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentConditionId" class="control-label"></label>
+                <select asp-for="PaymentConditionId" onchange="PopulatePaymentConditionTable(this.value);" class="form-control" asp-items="ViewBag.PaymentConditionId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="CancellationDate" class="control-label"></label>
+                <input asp-for="CancellationDate" class="form-control" />
+                <span asp-validation-for="CancellationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CancellationMotive" class="control-label"></label>
+                <input asp-for="CancellationMotive" class="form-control" />
+                <span asp-validation-for="CancellationMotive" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Value" class="control-label"></label>
+                <input asp-for="Value" class="form-control" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+        <partial name="_SaleProductGridPV" model="@new ItemSale();" />
+        <partial name="_PaymentConditionPV" model="@Model.PaymentCondition" />
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+
+
+        function PopulatePaymentConditionTable(id) {
+            GetInstalments(id, SetInstalmentsTable );
+        }
+
+        function GetInstalments(id, callback) {
+                    $.ajax({
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        type: 'POST',
+                        url: "/PaymentConditions/GetInstalments",
+                        data: JSON.stringify({ id: id }),
+                        success: function (data) {
+                            if (callback) {
+                                callback(data);
+                            }
+                        },
+                        error: function () {
+                            console.log("error on sending Id");
+                        }
+                    });
+                }
+
+        function SetInstalmentsTable(instalments) {
+            console.log(instalments);
+        }
+
+    </script>
+}
