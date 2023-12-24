@@ -1,5 +1,5 @@
-﻿using EHA_AspNetCore_Angular.Models.Base;
-using EHA_AspNetCore_Angular.Models.Products;
+﻿using EHA_AspNetCore.Models.Base;
+using EHA_AspNetCore.Models.Products;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;

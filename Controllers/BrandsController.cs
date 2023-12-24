@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using EHA_AspNetCore_Angular.Data;
-using EHA_AspNetCore_Angular.Models.Products;
+using EHA_AspNetCore.Data;
 using EHA_AspNetCore.Services.Interfaces;
+using EHA_AspNetCore.Models.Products;
 
 namespace EHA_AspNetCore.Controllers
 {

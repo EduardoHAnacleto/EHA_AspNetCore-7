@@ -1,7 +1,7 @@
 ﻿using EHA_AspNetCore.DTOs;
 using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Services.Interfaces;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using System.Text.Json.Nodes;
 
 namespace EHA_AspNetCore.Services;
@@ -65,6 +65,11 @@ public class InstalmentService : IInstalmentService
     }
 
     public bool CheckIfForeignKey(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ICollection<Instalment>> GetAll()
     {
         throw new NotImplementedException();
     }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore.Models.Payments;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Azure;
@@ -255,14 +255,11 @@ namespace EHA_AspNetCore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetInstalments(int id)
+        public async Task<IActionResult> GetPopulatedPaymentCondition(int id)
         {
-            var pc = _context.PaymentConditions
-                .Include(x => x.InstalmentList)
-                .ThenInclude(y => y.PaymentMethod)
-                .First(x => x.Id == 41);
+            var paymentCondition = _paymentConditionService.PopulateFullObjectFromId(id);
 
-            return Json(pc.InstalmentList);
+            return PartialView("_PaymentConditionPV", paymentCondition);
         }
     }
 }

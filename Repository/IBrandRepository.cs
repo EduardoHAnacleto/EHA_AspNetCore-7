@@ -1,4 +1,4 @@
-﻿using EHA_AspNetCore_Angular.Models.Products;
+﻿using EHA_AspNetCore.Models.Products;
 using System.Linq.Expressions;
 
 namespace EHA_AspNetCore.Repository;

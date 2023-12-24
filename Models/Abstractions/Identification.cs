@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace EHA_AspNetCore_Angular.Models.Base
+namespace EHA_AspNetCore.Models.Base
 {
     public abstract class Identification
     {

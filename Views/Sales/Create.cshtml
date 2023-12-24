@@ -1,4 +1,7 @@
-﻿@using EHA_AspNetCore.Models.Sales
+﻿@using EHA_AspNetCore.Models.Payments
+@using EHA_AspNetCore.Models.Sales
+@using Microsoft.AspNetCore.Mvc.Rendering
+
 @model EHA_AspNetCore.Models.Sales.Sale
 
 @{
@@ -19,7 +22,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="PaymentConditionId" class="control-label"></label>
-                <select asp-for="PaymentConditionId" onchange="PopulatePaymentConditionTable(this.value);" class="form-control" asp-items="ViewBag.PaymentConditionId"></select>
+                <select asp-for="PaymentConditionId" onchange="ReloadPartialView(this.value);" class="form-control" asp-items="ViewBag.PaymentConditionId"></select>
             </div>
             <div class="form-group">
                 <label asp-for="CancellationDate" class="control-label"></label>
@@ -40,8 +43,15 @@
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
-        <partial name="_SaleProductGridPV" model="@new ItemSale();" />
-        <partial name="_PaymentConditionPV" model="@Model.PaymentCondition" />
+        <div id="partialSale">
+            @Html.Partial("_SaleProductGridPV", Model.SaleItemsList)
+        </div>
+        <div id="partialPC">
+            @Html.Partial("_PaymentConditionPV", Model.PaymentCondition)
+        </div>
+
+
+        
     </div>
 </div>
 
@@ -53,9 +63,20 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
 
-
-        function PopulatePaymentConditionTable(id) {
-            GetInstalments(id, SetInstalmentsTable );
+        function ReloadPartialView(id) {
+            $.ajax({
+                url: '/Sales/GetPV/' + id,
+                type: 'GET',
+                success: function (result) {
+                    $('#partialPC').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.log('Erro ao carregar os detalhes da condição de pagamento.');
+                    console.log('Status da requisição: ' + status);
+                    console.log('Erro: ' + error);
+                    console.log('Resposta do servidor: ' + xhr.responseText);
+                }
+                });
         }
 
         function GetInstalments(id, callback) {
@@ -63,7 +84,7 @@
                         contentType: 'application/json',
                         dataType: 'json',
                         type: 'POST',
-                        url: "/PaymentConditions/GetInstalments",
+                        url: "/PaymentConditions/GetInstalmentsJson",
                         data: JSON.stringify({ id: id }),
                         success: function (data) {
                             if (callback) {
@@ -75,10 +96,6 @@
                         }
                     });
                 }
-
-        function SetInstalmentsTable(instalments) {
-            console.log(instalments);
-        }
 
     </script>
 }

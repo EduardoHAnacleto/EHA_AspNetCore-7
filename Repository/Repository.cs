@@ -1,4 +1,4 @@
-﻿using EHA_AspNetCore_Angular.Data;
+﻿using EHA_AspNetCore.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace EHA_AspNetCore.Repository.IRepository;

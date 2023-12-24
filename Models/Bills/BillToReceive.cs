@@ -1,7 +1,7 @@
 ﻿using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Models.People;
 using EHA_AspNetCore.Models.Sales;
-using EHA_AspNetCore_Angular.Models.Base;
+using EHA_AspNetCore.Models.Base;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

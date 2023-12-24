@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore.Models.People;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using EHA_AspNetCore.Services.Interfaces;
 using EHA_AspNetCore.Services;
 using Newtonsoft.Json.Linq;

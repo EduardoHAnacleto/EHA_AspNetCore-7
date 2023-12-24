@@ -1,7 +1,9 @@
-﻿using EHA_AspNetCore_Angular.Models.Products;
+﻿using EHA_AspNetCore.Models.Payments;
+using EHA_AspNetCore.Models.Products;
 
 namespace EHA_AspNetCore.Services.Interfaces;
 
 public interface IProductService : IService<Product>
 {
+
 }

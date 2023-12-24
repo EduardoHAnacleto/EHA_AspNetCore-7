@@ -1,6 +1,6 @@
 ﻿using EHA_AspNetCore.Models.People;
 using EHA_AspNetCore.Services.Interfaces;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -90,6 +90,11 @@ public class CustomerService : ICustomerService
         json["country"] = "Brazil";
 
         return JsonConvert.SerializeObject(json);
+    }
+
+    public Task<ICollection<Customer>> GetAll()
+    {
+        throw new NotImplementedException();
     }
 
     //public class EnderecoViaCEP

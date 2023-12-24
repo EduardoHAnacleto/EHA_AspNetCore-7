@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore.Models.Payments;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using System.Runtime.CompilerServices;
 using Microsoft.Data.SqlClient;
 using EHA_AspNetCore.Services.Interfaces;

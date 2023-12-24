@@ -1,38 +1,131 @@
-﻿@using EHA_AspNetCore.Models.Sales
-@model ItemSale
+﻿@using EHA_AspNetCore.Models.Products
+@using EHA_AspNetCore.Models.Sales
+@model List<ItemSale>
 
-<div class="row">
-    <div class="col-md-12">
-        <table id="tableItemsSale" class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>Discount</th>
-                    <th>Value</th>
-                    <th>Total Value</th>
-                </tr>
-            </thead>
-            <tbody id="tbodyItemsSale">
-                <tr>
-
-                </tr>
-            </tbody>
-        </table>
+<div class="container" id="_SaleProductGridPV">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="form-group">
+                    <label for="ProductName">Product</label>
+                    <input type="text" id="ProductName" value="" />
+                    <button type="button" onclick="FindProduct()" id="FindProduct">Search</button>
+                </div>
+                <div class="row">
+                    <label for="Quantity">Quantity</label>
+                    <input type="number" id="Quantity" value="1" />
+                    <label for="Discount">Discount</label>
+                    <input type="number" id="Discount" value="0" />
+                    <label for="Price">Price</label>
+                    <input type="number" id="Price" value="0" />
+                    <label for="TotalPrice">Total</label>
+                    <input type="number" id="TotalPrice" value="0" />
+                </div>
+            </div>
+            <table id="tableItemsSale" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Discount</th>
+                        <th>Value</th>
+                        <th>Total Value</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyItemsSale">
+                    @foreach (var item in Model)
+                    {
+                        <tr id="@item.Product.Id">
+                            <td>@item.Product.Name</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Discount</td>
+                            <td>@item.ProductValue</td>
+                            <td>@(item.Discount * item.ProductValue)</td>
+                            <td button class="btn btn-sm btn-outline-info" onclick="RemoveFromList(@item.Product.Id)">Remove</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
-        var dgvItemsSale = $("#tableItemsSale");
-        var row = dgvItemsSale.find("tbody").append("<tr></tr>");
+<div id="partialFindProducts">
+    @Html.Partial("_ProductsModalPV", new List<Product>() )
+</div>
 
-        row.append("<td>ProdutoNome</td>");
-        row.append("<td>100</td>");
-        row.append("<td>0</td>");
-        row.append("<td>2</td>");
-        row.append("<td>2</td>");
-    })
-</script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 
+    <script>
+        $(document).ready(function () {
+            $("#modalProducts").modal("hide");
+            GetAllProducts();
+        })
+
+        function FetchProductFromModal() {
+
+        }
+
+        function AddProductToList(id) {
+            var qtd = $('#Quantity').val();
+            var discount = $('#Discount').val();
+            
+            $.ajax({
+                url: '/Sales/SetListItemSale/',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify({ id: id, qtd: qtd, discount: discount }),
+                success: function (result) {
+                    $('#partialSale').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.log('Erro ao carregar os detalhes da condição de pagamento.');
+                    console.log('Status da requisição: ' + status);
+                    console.log('Erro: ' + error);
+                    console.log('Resposta do servidor: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function RemoveFromList(id) {
+            $.ajax({
+                url: '/Sales/AlterListItemSale/' + id,
+                type: 'GET',
+                success: function (result) {
+                    $('#_SaleProductGridPV').html(result);
+                },
+                error: function (xhr, status, error) {
+                    console.log('Erro ao carregar os detalhes da condição de pagamento.');
+                    console.log('Status da requisição: ' + status);
+                    console.log('Erro: ' + error);
+                    console.log('Resposta do servidor: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function FindProduct() {
+            $("#modalProducts").modal("show");
+        }
+
+        function GetAllProducts() {
+            $.ajax({
+                url: "/Products/GetAllPV",
+                method: "GET",
+                success: function (products) {
+                    ReloadProductsModal(products);
+                },
+                error: function () {
+                    console.log("error");
+                }
+            });
+        }
+
+        function ReloadProductsModal(products) {
+            setTimeout(function () {
+            $('#partialFindProducts').html(products)
+            }, 100);            
+        }
+
+    </script>
 

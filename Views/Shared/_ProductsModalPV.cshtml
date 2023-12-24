@@ -1,0 +1,65 @@
+﻿@using EHA_AspNetCore.Models.Products
+@model List<Product>
+
+<div id="modalProducts" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+    <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Find Products</h6>
+            </div>
+        
+            <div class="modal-body">
+        <table id="tableProducts" class="table table-sm table-hover table-striped table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyProducts">
+                @foreach (var prod in Model)
+                {
+                    <tr id="@prod.Id">
+                        <td>@prod.Name</td>
+                        <td>@prod.Brand.Name</td>
+                        <td>@prod.Category.Name</td>
+                        <td>@prod.Stock</td>
+                        <td>@prod.Value</td>
+                        <td button class="btn btn-sm btn-outline-info" onclick="GetProductIdFromModal(@prod.Id)">Add</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+            </div>
+            <div class="modal-footer">
+                <div class="form-group">
+                    <button class="btn btn-primary" onclick="HideProductModal()">Close</button>
+                </div>
+            </div>
+    </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+
+        function HideProductModal() {
+            $("#modalProducts").modal("hide");
+        }
+
+        function ShowProductModal() {
+            $("#modalProducts").modal("show");
+        }
+
+        function GetProductIdFromModal(id) {
+            return id;
+        }
+
+    </script>

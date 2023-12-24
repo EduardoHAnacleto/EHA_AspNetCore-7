@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EHA_AspNetCore_Angular.Models.Base;
+using EHA_AspNetCore.Models.Base;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.EntityFrameworkCore;
 
-namespace EHA_AspNetCore_Angular.Models.Products;
+namespace EHA_AspNetCore.Models.Products;
 
 [Table("Brands")]
 public class Brand : Identification

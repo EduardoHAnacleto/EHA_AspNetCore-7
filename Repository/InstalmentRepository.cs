@@ -1,6 +1,6 @@
 ﻿using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Repository.IRepository;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 
 namespace EHA_AspNetCore.Repository;
 

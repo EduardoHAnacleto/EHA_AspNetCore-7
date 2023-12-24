@@ -1,8 +1,9 @@
 ﻿using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Services.Interfaces;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Nodes;
 
 namespace EHA_AspNetCore.Services;
 
@@ -46,4 +47,29 @@ public class PaymentConditionService : IPaymentConditionService
         return pc;
     }
 
+    public Task<ICollection<Instalment>> GetInstalments(int id)
+    {
+        var pc = _context.PaymentConditions
+            .Include(x => x.InstalmentList)
+            .ThenInclude(y => y.PaymentMethod)
+            .FirstOrDefault(x => x.Id == id);
+
+        return Task.FromResult( pc?.InstalmentList);
+    }
+
+    public async Task<PaymentCondition> PopulateFullObjectFromId(int id)
+    {
+        var pcTask = _context.PaymentConditions
+            .Include(x => x.InstalmentList)
+            .ThenInclude(y => y.PaymentMethod)
+            .FirstOrDefaultAsync(x => x.Id == id);
+        var pc = await pcTask;
+
+        return pc;
+    }
+
+    public Task<ICollection<PaymentCondition>> GetAll()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -112,7 +112,7 @@
 </div>
 
 
-<div id="modalCreate" class="modal fade" rode="dialog">
+<div id="modalCreate" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <form asp-action="Create" asp-controller="PaymentMethods" method="post" onsubmit="event.preventDefault();">
@@ -252,7 +252,6 @@
         }
 
         function SetModal(methods) {
-            console.log(methods);
             var index = 0;
             var modTable = document.getElementById("modTable");
             var table = '<table class="table table-sm table-hover table-striped table" >';
@@ -268,7 +267,7 @@
             for (index = 0; index < methods.length; index++) {
                 table += '<tr id="method_'+methods[index].id+'">';
                 table += '<td id="${methods[index].name}"> '+methods[index].name+' </td>';
-                table += '<td button class="btn btn-sm btn-outline-info" onclick="TakeMethodName('+methods[index].id+')">Select</td>';
+                table += '<td button class="btn btn-sm btn-outline-info" onclick="TakeMethodName('+methods[index].name+')">Select</td>';
 
                 table += '</tr>'
             }  

@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using EHA_AspNetCore_Angular.Data;
-using EHA_AspNetCore_Angular.Models.Products;
+using EHA_AspNetCore.Data;
+using EHA_AspNetCore.Models.Products;
+using EHA_AspNetCore.Services.Interfaces;
+using EHA_AspNetCore.Services;
 
 namespace EHA_AspNetCore.Controllers
 {
@@ -14,9 +16,12 @@ namespace EHA_AspNetCore.Controllers
     {
         private readonly AppDbContext _context;
 
-        public ProductsController(AppDbContext context)
+        private readonly IProductService _service;
+
+        public ProductsController(AppDbContext context, IProductService service)
         {
             _context = context;
+            _service = service;
         }
 
         // GET: Products
@@ -52,6 +57,19 @@ namespace EHA_AspNetCore.Controllers
             ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Name");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAll()
+        {
+            return Json(await _service.GetAll());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllPV()
+        {
+            var products = await _service.GetAll();
+            return PartialView("_ProductsModalPV", products);
         }
 
         // POST: Products/Create
@@ -170,5 +188,6 @@ namespace EHA_AspNetCore.Controllers
         {
           return _context.Products.Any(e => e.Id == id);
         }
+
     }
 }

@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EHA_AspNetCore_Angular.Models.Base;
+using EHA_AspNetCore.Models.Base;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace EHA_AspNetCore_Angular.Models.Products;
+namespace EHA_AspNetCore.Models.Products;
 
 [Table("Categories")]
 public class Category : Identification

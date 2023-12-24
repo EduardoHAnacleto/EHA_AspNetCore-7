@@ -1,6 +1,6 @@
 ﻿using EHA_AspNetCore.Models.People;
 using EHA_AspNetCore.Services.Interfaces;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Net.Http;
@@ -87,5 +87,10 @@ public class SupplierService : ISupplierService
         json["country"] = "Brazil";
 
         return JsonConvert.SerializeObject(json);
+    }
+
+    public Task<ICollection<Supplier>> GetAll()
+    {
+        throw new NotImplementedException();
     }
 }

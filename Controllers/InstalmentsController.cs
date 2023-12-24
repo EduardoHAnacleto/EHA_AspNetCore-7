@@ -1,5 +1,5 @@
 ﻿using EHA_AspNetCore.Models.Payments;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

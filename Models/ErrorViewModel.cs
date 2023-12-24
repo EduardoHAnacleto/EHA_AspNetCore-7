@@ -1,4 +1,4 @@
-namespace EHA_AspNetCore_Angular.Models
+namespace EHA_AspNetCore.Models
 {
     public class ErrorViewModel
     {

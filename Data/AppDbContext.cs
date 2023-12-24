@@ -4,11 +4,11 @@ using EHA_AspNetCore.Models.Payments;
 using EHA_AspNetCore.Models.People;
 using EHA_AspNetCore.Models.Purchases;
 using EHA_AspNetCore.Models.Sales;
-using EHA_AspNetCore_Angular.Models.Base;
-using EHA_AspNetCore_Angular.Models.Products;
+using EHA_AspNetCore.Models.Base;
+using EHA_AspNetCore.Models.Products;
 using Microsoft.EntityFrameworkCore;
 
-namespace EHA_AspNetCore_Angular.Data
+namespace EHA_AspNetCore.Data
 {
     public class AppDbContext : DbContext
     {

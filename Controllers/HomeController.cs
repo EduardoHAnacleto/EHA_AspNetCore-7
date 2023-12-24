@@ -1,8 +1,8 @@
-﻿using EHA_AspNetCore_Angular.Models;
+﻿using EHA_AspNetCore.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace EHA_AspNetCore_Angular.Controllers
+namespace EHA_AspNetCore.Controllers
 {
     public class HomeController : Controller
     {

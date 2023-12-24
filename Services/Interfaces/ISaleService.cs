@@ -4,5 +4,5 @@ namespace EHA_AspNetCore.Services.Interfaces;
 
 public interface ISaleService : IService<Sale>
 {
-
+    Task<ItemSale> PopulateItemSaleProductFromId(int id);
 }

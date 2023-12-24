@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EHA_AspNetCore.Models.Sales;
-using EHA_AspNetCore_Angular.Data;
+using EHA_AspNetCore.Data;
 using EHA_AspNetCore.Services.Interfaces;
 using EHA_AspNetCore.Models.Payments;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
 
 namespace EHA_AspNetCore.Controllers
 {
@@ -18,6 +19,7 @@ namespace EHA_AspNetCore.Controllers
         private readonly AppDbContext _context;
         private readonly ISaleService _saleService;
         private readonly IPaymentConditionService _paymentConditionService;
+        private List<ItemSale> _itemSaleList { get; set; }
 
         public SalesController(AppDbContext context, ISaleService saleService, IPaymentConditionService paymentConditionService)
         {
@@ -65,28 +67,6 @@ namespace EHA_AspNetCore.Controllers
             sale.PaymentCondition = initialPayCond;
 
             return View(sale);
-        }
-
-        public void Reutilizar()
-        {
-            ViewData["ListItems"] = new List<string>();
-
-            var pc = new PaymentCondition();
-            pc = _context.PaymentConditions
-                .Include(x => x.InstalmentList)
-                .First(x => x.Id == 41);
-
-            var list = new List<string>();
-            foreach (var inst in pc.InstalmentList)
-            {
-                inst.PaymentMethod = _context.PaymentMethods.First(x => x.Id == inst.PaymentMethodId);
-                list.Add(inst.Number.ToString());
-                list.Add(inst.Days.ToString());
-                list.Add(inst.Percentage.ToString());
-                list.Add(inst.PaymentMethod.Name.ToString());
-            }
-            var aux = list;
-            ViewData["ListItems"] = list;
         }
 
         // POST: Sales/Create
@@ -202,6 +182,67 @@ namespace EHA_AspNetCore.Controllers
         private bool SaleExists(int id)
         {
             return _context.Sales.Any(e => e.Id == id);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPV(int id)
+        {
+            var paymentCondition = _paymentConditionService.PopulateFullObjectFromId(id);
+            var x = await paymentCondition;
+            //return Json(x);
+            return PartialView("_PaymentConditionPV", x);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetListItemSale(int id, int qtd, decimal discount)
+        {
+            if (id <= 0 || qtd <= 0 || discount < 0)
+            {
+                return null;
+            }
+            if (_itemSaleList == null)
+            {
+                _itemSaleList = new List<ItemSale>();
+            }
+
+            try
+            {
+                var itemSaleTask = _saleService.PopulateItemSaleProductFromId(id);
+                var itemSale = await itemSaleTask;
+                itemSale.Quantity = qtd;
+                itemSale.Discount = discount;
+                itemSale.ProductValue = itemSale.Product.Value;
+                _itemSaleList.Add(itemSale);
+                return PartialView("_SaleProductGridPV",_itemSaleList);
+            }
+            catch(Exception ex)
+            {
+                return Json(ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AlterListItemSale(int id)
+        {
+            if (id <= 0)
+            {
+                return null;
+            }
+            if (_itemSaleList == null)
+            {
+                _itemSaleList = new List<ItemSale>();
+            }
+
+            try
+            {
+                var item = _itemSaleList.First(x => x.Product.Id == id);
+                _itemSaleList.Remove(item);
+                return PartialView("_SaleProductGridPV", _itemSaleList);
+            }
+            catch(Exception ex)
+            {
+                return Json(ex);
+            }
         }
     }
 }

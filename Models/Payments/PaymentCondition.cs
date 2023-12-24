@@ -1,4 +1,4 @@
-﻿using EHA_AspNetCore_Angular.Models.Base;
+﻿using EHA_AspNetCore.Models.Base;
 using Newtonsoft.Json;
 using NuGet.Packaging;
 using System.ComponentModel;
