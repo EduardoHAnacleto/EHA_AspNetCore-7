@@ -11,6 +11,8 @@ using EHA_AspNetCore.Services.Interfaces;
 using EHA_AspNetCore.Models.Payments;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
+using EHA_AspNetCore.DTOs;
 
 namespace EHA_AspNetCore.Controllers
 {
@@ -19,13 +21,15 @@ namespace EHA_AspNetCore.Controllers
         private readonly AppDbContext _context;
         private readonly ISaleService _saleService;
         private readonly IPaymentConditionService _paymentConditionService;
-        private List<ItemSale> _itemSaleList { get; set; }
+        private readonly IProductService _productService;
+        public List<ItemSale> _itemSaleList { get; set; }
 
-        public SalesController(AppDbContext context, ISaleService saleService, IPaymentConditionService paymentConditionService)
+        public SalesController(AppDbContext context, ISaleService saleService, IPaymentConditionService paymentConditionService, IProductService productService)
         {
             _context = context;
             _saleService = saleService;
             _paymentConditionService = paymentConditionService;
+            _productService = productService;
         }
 
         // GET: Sales
@@ -194,43 +198,53 @@ namespace EHA_AspNetCore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetListItemSale(int id, int qtd, decimal discount)
+        public async Task<IActionResult> SetListItemSale([FromBody]ItemSaleDTO jobj)
         {
-            if (id <= 0 || qtd <= 0 || discount < 0)
+            if (jobj.Id == null || jobj.Id <= 0)
             {
-                return null;
+                return BadRequest();
+            }
+            if (jobj.Qtd == null || jobj.Qtd <= 0)
+            {
+                jobj.Qtd = 1;
+            }
+            if (jobj.Discount == null || jobj.Discount >= 100)
+            {
+                jobj.Discount = 0;
             }
             if (_itemSaleList == null)
             {
                 _itemSaleList = new List<ItemSale>();
             }
 
+
             try
             {
-                var itemSaleTask = _saleService.PopulateItemSaleProductFromId(id);
-                var itemSale = await itemSaleTask;
-                itemSale.Quantity = qtd;
-                itemSale.Discount = discount;
-                itemSale.ProductValue = itemSale.Product.Value;
+                var productTask = await _productService.GetFullObject((int)jobj.Id);
+                ItemSale itemSale = new ItemSale
+                {
+                    ItemSaleId = 0,
+                    Quantity = (int)jobj.Qtd,
+                    Discount = (int)jobj.Discount,
+                    ProductValue = productTask.Value,
+                    Product = productTask,
+                    ProductId = productTask.Id
+                };
                 _itemSaleList.Add(itemSale);
-                return PartialView("_SaleProductGridPV",_itemSaleList);
+                return PartialView("_SaleProductGridPV", _itemSaleList);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(ex);
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> AlterListItemSale(int id)
+        public async Task<IActionResult> AlterListItemSale(int? id)
         {
-            if (id <= 0)
+            if (id == null || id <= 0 || _itemSaleList.Count == 0)
             {
-                return null;
-            }
-            if (_itemSaleList == null)
-            {
-                _itemSaleList = new List<ItemSale>();
+                return BadRequest();
             }
 
             try

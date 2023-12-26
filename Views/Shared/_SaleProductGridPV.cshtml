@@ -2,7 +2,7 @@
 @using EHA_AspNetCore.Models.Sales
 @model List<ItemSale>
 
-<div class="container" id="_SaleProductGridPV">
+<div class="container" id="SaleProductGridPV">
     <div class="row">
         <div class="col-md-12">
             <div class="row">
@@ -10,6 +10,7 @@
                     <label for="ProductName">Product</label>
                     <input type="text" id="ProductName" value="" />
                     <button type="button" onclick="FindProduct()" id="FindProduct">Search</button>
+                    <input type="hidden" id="ProductId" disabled />
                 </div>
                 <div class="row">
                     <label for="Quantity">Quantity</label>
@@ -20,6 +21,7 @@
                     <input type="number" id="Price" value="0" />
                     <label for="TotalPrice">Total</label>
                     <input type="number" id="TotalPrice" value="0" />
+                    <button type="button" onclick="AddProductToList()">Add</button>
                 </div>
             </div>
             <table id="tableItemsSale" class="table table-bordered table-hover">
@@ -41,7 +43,7 @@
                             <td>@item.Quantity</td>
                             <td>@item.Discount</td>
                             <td>@item.ProductValue</td>
-                            <td>@(item.Discount * item.ProductValue)</td>
+                            <td>@(item.Quantity * item.ProductValue)</td>
                             <td button class="btn btn-sm btn-outline-info" onclick="RemoveFromList(@item.Product.Id)">Remove</td>
                         </tr>
                     }
@@ -56,6 +58,7 @@
 </div>
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         $(document).ready(function () {
@@ -63,24 +66,24 @@
             GetAllProducts();
         })
 
-        function FetchProductFromModal() {
-
-        }
-
-        function AddProductToList(id) {
+        function AddProductToList() {
+            var id = document.getElementById("ProductId").value;
             var qtd = $('#Quantity').val();
             var discount = $('#Discount').val();
             
             $.ajax({
                 url: '/Sales/SetListItemSale/',
+                contentType: 'application/json',
                 type: 'POST',
-                dataType: 'json',
-                data: JSON.stringify({ id: id, qtd: qtd, discount: discount }),
+                data: JSON.stringify({ Id: id, Qtd: qtd, Discount: discount }),
                 success: function (result) {
-                    $('#partialSale').html(result);
+                    setTimeout(function () {
+                    $('#SaleProductGridPV').html(result)
+                    }, 100);
+
                 },
                 error: function (xhr, status, error) {
-                    console.log('Erro ao carregar os detalhes da condição de pagamento.');
+                    console.log('Erro ao carregar os detalhes do item de venda.');
                     console.log('Status da requisição: ' + status);
                     console.log('Erro: ' + error);
                     console.log('Resposta do servidor: ' + xhr.responseText);
@@ -88,21 +91,26 @@
             });
         }
 
-        function RemoveFromList(id) {
-            $.ajax({
-                url: '/Sales/AlterListItemSale/' + id,
-                type: 'GET',
-                success: function (result) {
-                    $('#_SaleProductGridPV').html(result);
-                },
-                error: function (xhr, status, error) {
-                    console.log('Erro ao carregar os detalhes da condição de pagamento.');
-                    console.log('Status da requisição: ' + status);
-                    console.log('Erro: ' + error);
-                    console.log('Resposta do servidor: ' + xhr.responseText);
-                }
-            });
-        }
+    function RemoveFromList(id) {
+        console.log(id);
+        $.ajax({
+            url: '/Sales/AlterListItemSale/' + id,
+            type: 'POST',
+            success: function (result) {
+                console.log(result);
+                setTimeout(function () {
+                    $('#SaleProductGridPV').html(result)
+                }, 100);
+
+            },
+            error: function (xhr, status, error) {
+                console.log('Erro ao carregar os detalhes do item de venda.');
+                console.log('Status da requisição: ' + status);
+                console.log('Erro: ' + error);
+                console.log('Resposta do servidor: ' + xhr.responseText);
+            }
+        });
+    }
 
         function FindProduct() {
             $("#modalProducts").modal("show");

@@ -5,5 +5,5 @@ namespace EHA_AspNetCore.Services.Interfaces;
 
 public interface IProductService : IService<Product>
 {
-
+    Task<Product> GetFullObject(int id);
 }

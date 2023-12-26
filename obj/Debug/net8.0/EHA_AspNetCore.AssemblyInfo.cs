@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("EHA_AspNetCore")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7dd6b6cd05d7da298ac9e911267b045fc59b6023")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f609fff1d615c8567fcfcad62cfc3caecee38c3b")]
 [assembly: System.Reflection.AssemblyProductAttribute("EHA_AspNetCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("EHA_AspNetCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

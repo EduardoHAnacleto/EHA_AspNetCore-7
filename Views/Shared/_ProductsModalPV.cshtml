@@ -29,7 +29,7 @@
                         <td>@prod.Category.Name</td>
                         <td>@prod.Stock</td>
                         <td>@prod.Value</td>
-                        <td button class="btn btn-sm btn-outline-info" onclick="GetProductIdFromModal(@prod.Id)">Add</td>
+                        <td button class="btn btn-sm btn-outline-info" id="btnAddProduct" onclick="SetProductToInputs('@prod.Id', '@prod.Name')">Add</td>
                     </tr>
                 }
             </tbody>
@@ -58,8 +58,10 @@
             $("#modalProducts").modal("show");
         }
 
-        function GetProductIdFromModal(id) {
-            return id;
+    function SetProductToInputs(id, name) {
+            $('#ProductName').val(name);
+            $('#ProductId').val(id);
+            HideProductModal();
         }
 
     </script>

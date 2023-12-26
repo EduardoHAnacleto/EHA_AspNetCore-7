@@ -35,4 +35,13 @@ public class ProductService : IProductService
 
         return allObjs;
     }
+
+    public async Task<Product> GetFullObject(int id)
+    {
+        var prod = _context.Products
+            .Include(x => x.Brand)
+            .Include(y => y.Category)
+            .SingleOrDefaultAsync(x => x.Id == id);
+        return await prod;
+    }
 }

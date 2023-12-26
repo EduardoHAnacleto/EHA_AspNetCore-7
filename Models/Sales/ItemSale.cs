@@ -23,11 +23,10 @@ public class ItemSale
     public int Quantity { get; set; }
 
     [Required]
-    [Display(Name = "Discount percent")]
-    [Column(TypeName = "decimal(5,2")]
+    [Display(Name = "Discount percentage")]
     [DefaultValue(0)]
     [Range(0, 20000)]
-    public decimal Discount { get; set; }
+    public int Discount { get; set; }
 
     [Required]
     [Display(Name = "Value")]
@@ -43,7 +42,7 @@ public class ItemSale
         
     }
 
-    public ItemSale(int quantity, decimal discount, decimal productValue, DateTime? cancelledDate)
+    public ItemSale(int quantity, int discount, decimal productValue, DateTime? cancelledDate)
     {
         Quantity = quantity;
         Discount = discount;
